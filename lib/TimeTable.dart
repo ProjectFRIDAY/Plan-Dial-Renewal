@@ -1,11 +1,14 @@
+/*
+할일!
+1. UI적인 부분을 절대적인 값 말고 상대적인 값으로 변경해서 display 비율에 따라 자동 조정 기능 고려하기
+*/
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(const TimeTable());
 }
-
-int _sliding = 0;
 
 class TimeTable extends StatelessWidget {
   const TimeTable({Key? key}) : super(key: key);
@@ -14,69 +17,32 @@ class TimeTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
+            //앱 상단 : 서비스 명
             appBar: AppBar(
-              title: Text('Plan Dial',
+              title: const Text('Plan Dial',
                   style: TextStyle(fontWeight: FontWeight.bold)),
               backgroundColor: Colors.transparent,
               foregroundColor: Colors.black,
               elevation: 0,
             ),
-            body: Container(
-              child: Column(
-                children: [
-                  // page 이름과 전체 삭제, 플러스 아이콘, divier line
-                  Column(
-                    children: [
-                      Row(
-                        children: const [
-                          Text("TimeTable",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 25)),
-                          Icon(
-                            CupertinoIcons.trash,
-                            color: Colors.red,
-                          ),
-                          Icon(
-                            CupertinoIcons.add,
-                            color: CupertinoColors.activeBlue,
-                          ),
-                        ],
-                      ),
-                      const Divider(
-                        color: Colors.black54,
-                        height: 20,
-                      )
-                    ],
-                  ),
-                  // calendar
-                  Container(
-                    child: const Text(
-                      'calendar',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                  ),
-                  // TimeTable 안의 Week and Today page
-                  SegmentedControl()
-                ],
-              ),
-            )
-            //bottomNavigationBar: 이부분은 민규님께서 개발함.,
+            body: PageSegmentedControl()
+            //bottomNavigationBar: 이부분은 민규님께서 개발함.
             ));
   }
 }
 
-// TimeTable 안의 Week and Today page
-class SegmentedControl extends StatefulWidget {
-  const SegmentedControl({Key? key}) : super(key: key);
+// Page 정보 & TimeTable 안의 Week and Today page
+class PageSegmentedControl extends StatefulWidget {
+  const PageSegmentedControl({Key? key}) : super(key: key);
 
   @override
   State createState() => SegmentedControlState();
 }
 
-class SegmentedControlState extends State<SegmentedControl> {
+class SegmentedControlState extends State<PageSegmentedControl> {
   final Map<int, Widget> children = const <int, Widget>{
     0: Text('Week'),
-    //사이즈 맞추는 용도로 띄어쓰기를 함.
+    //사이즈 맞추는 용도로 띄어쓰기를 함. ,UI 불안정할 시 수정
     1: Text('            Today            '),
   };
 
@@ -84,14 +50,128 @@ class SegmentedControlState extends State<SegmentedControl> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoSlidingSegmentedControl<int>(
-      children: children,
-      onValueChanged: (int? newValue) {
-        setState(() {
-          currentValue = newValue;
-        });
-      },
-      groupValue: currentValue,
+    return Column(
+      children: [
+        // Week Page & Today Page 구분
+        if (currentValue == 0)
+          Column(
+            children: [WeekTop(), WeekPage()],
+          )
+        else
+          Column(
+            children: [TodayTop(), TodayPage()],
+          ),
+        CupertinoSlidingSegmentedControl<int>(
+          children: children,
+          onValueChanged: (int? newValue) {
+            setState(() {
+              currentValue = newValue;
+            });
+          },
+          groupValue: currentValue,
+        ),
+      ],
+    );
+  }
+}
+
+// Week Page의 이름과 전체 삭제, 플러스 아이콘 & divider line
+class WeekTop extends StatelessWidget {
+  const WeekTop({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Column(
+          children: [
+            Row(
+              children: const [
+                Text("TimeTable",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+                Icon(CupertinoIcons.trash, color: Colors.red, size: 20),
+                Icon(CupertinoIcons.add,
+                    color: CupertinoColors.activeBlue, size: 25),
+              ],
+            ),
+            const Divider(
+              color: Colors.black54,
+              height: 20,
+            ),
+          ],
+        )
+      ],
+    );
+  }
+}
+
+// Today Page의 이름 & divider line
+class TodayTop extends StatelessWidget {
+  const TodayTop({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: const [
+            Text("To Do",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+          ],
+        ),
+        const Divider(
+          color: Colors.black54,
+          height: 20,
+        ),
+      ],
+    );
+  }
+}
+
+// Week Page
+class WeekPage extends StatelessWidget {
+  const WeekPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: const [
+        Text(
+          'Week',
+          style: TextStyle(fontSize: 25),
+        ),
+        Text('currentValue가 0입니다.'),
+      ],
+    );
+  }
+}
+
+// Today Page
+class TodayPage extends StatelessWidget {
+  const TodayPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: const [
+            Text(
+              '오늘 실천 완료한 계획을 눌러 체크하세요!',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+        const Text(
+          'Today',
+          style: TextStyle(fontSize: 25),
+        ),
+        const Text('currentValue가 1입니다.'),
+      ],
     );
   }
 }
