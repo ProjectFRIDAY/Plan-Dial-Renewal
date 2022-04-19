@@ -1,6 +1,7 @@
 /*
 할일!
 1. UI적인 부분을 절대적인 값 말고 상대적인 값으로 변경해서 display 비율에 따라 자동 조정 기능 고려하기
+2. 46line : 사이즈 맞추는 용도로 띄어쓰기를 함. ,UI 불안정할 시 수정
 */
 
 import 'package:flutter/cupertino.dart';
@@ -42,7 +43,6 @@ class PageSegmentedControl extends StatefulWidget {
 class SegmentedControlState extends State<PageSegmentedControl> {
   final Map<int, Widget> children = const <int, Widget>{
     0: Text('Week'),
-    //사이즈 맞추는 용도로 띄어쓰기를 함. ,UI 불안정할 시 수정
     1: Text('            Today            '),
   };
 
@@ -83,24 +83,29 @@ class WeekTop extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Column(
-          children: [
-            Row(
-              children: const [
-                Text("TimeTable",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
-                Icon(CupertinoIcons.trash, color: Colors.red, size: 20),
-                Icon(CupertinoIcons.add,
-                    color: CupertinoColors.activeBlue, size: 25),
-              ],
-            ),
-            const Divider(
-              color: Colors.black54,
-              height: 20,
-            ),
-          ],
-        )
+        Row(children: [
+          Flexible(child: Container(), flex: 1),
+          Flexible(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(children: const [
+                      Text("TimeTable",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 25)),
+                      Padding(padding: EdgeInsets.fromLTRB(0, 0, 7, 0)),
+                      Icon(CupertinoIcons.trash, color: Colors.red, size: 20),
+                    ]),
+                    const Icon(CupertinoIcons.add,
+                        color: CupertinoColors.activeBlue, size: 25),
+                  ]),
+              flex: 30),
+          Flexible(child: Container(), flex: 2),
+        ]),
+        const Divider(
+          color: Colors.black54,
+          height: 20,
+        ),
       ],
     );
   }
@@ -115,9 +120,14 @@ class TodayTop extends StatelessWidget {
     return Column(
       children: [
         Row(
-          children: const [
-            Text("To Do",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+          children: [
+            Flexible(child: Container(), flex: 1),
+            const Flexible(
+                child: Text("To Do",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+                flex: 30),
+            Flexible(child: Container(), flex: 2),
           ],
         ),
         const Divider(
@@ -157,6 +167,7 @@ class TodayPage extends StatelessWidget {
       children: [
         Row(
           children: const [
+            Padding(padding: EdgeInsets.fromLTRB(15, 0, 0, 0)),
             Text(
               '오늘 실천 완료한 계획을 눌러 체크하세요!',
               style: TextStyle(
