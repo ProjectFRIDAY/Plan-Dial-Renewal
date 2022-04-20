@@ -7,31 +7,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const TimeTable());
-}
-
-class TimeTable extends StatelessWidget {
-  const TimeTable({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
-            //앱 상단 : 서비스 명
-            appBar: AppBar(
-              title: const Text('Plan Dial',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              backgroundColor: Colors.transparent,
-              foregroundColor: Colors.black,
-              elevation: 0,
-            ),
-            body: PageSegmentedControl()
-            //bottomNavigationBar: 이부분은 민규님께서 개발함.
-            ));
-  }
-}
-
 // Page 정보 & TimeTable 안의 Week and Today page
 class PageSegmentedControl extends StatefulWidget {
   const PageSegmentedControl({Key? key}) : super(key: key);
@@ -50,7 +25,8 @@ class SegmentedControlState extends State<PageSegmentedControl> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return SafeArea(
+        child: Column(
       children: [
         // Week Page & Today Page 구분
         if (currentValue == 0)
@@ -62,16 +38,16 @@ class SegmentedControlState extends State<PageSegmentedControl> {
             children: [TodayTop(), TodayPage()],
           ),
         CupertinoSlidingSegmentedControl<int>(
-          children: children,
-          onValueChanged: (int? newValue) {
-            setState(() {
-              currentValue = newValue;
-            });
-          },
-          groupValue: currentValue,
-        ),
-      ],
-    );
+              children: children,
+              onValueChanged: (int? newValue) {
+                setState(() {
+                  currentValue = newValue;
+                });
+              },
+              groupValue: currentValue,
+            ),
+          ],
+        ));
   }
 }
 
@@ -94,7 +70,8 @@ class WeekTop extends StatelessWidget {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 25)),
                       Padding(padding: EdgeInsets.fromLTRB(0, 0, 7, 0)),
-                      Icon(CupertinoIcons.trash, color: Colors.red, size: 20),
+                      Icon(CupertinoIcons.trash,
+                          color: CupertinoColors.destructiveRed, size: 20),
                     ]),
                     const Icon(CupertinoIcons.add,
                         color: CupertinoColors.activeBlue, size: 25),
@@ -103,7 +80,7 @@ class WeekTop extends StatelessWidget {
           Flexible(child: Container(), flex: 2),
         ]),
         const Divider(
-          color: Colors.black54,
+          color: CupertinoColors.black,
           height: 20,
         ),
       ],
@@ -131,7 +108,7 @@ class TodayTop extends StatelessWidget {
           ],
         ),
         const Divider(
-          color: Colors.black54,
+          color: CupertinoColors.black,
           height: 20,
         ),
       ],
@@ -171,7 +148,7 @@ class TodayPage extends StatelessWidget {
             Text(
               '오늘 실천 완료한 계획을 눌러 체크하세요!',
               style: TextStyle(
-                  color: Colors.black,
+                  color: CupertinoColors.black,
                   fontSize: 17,
                   fontWeight: FontWeight.w500),
             ),
