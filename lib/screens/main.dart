@@ -12,7 +12,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const CupertinoApp(
       title: 'Plan Dial',
-      home: BottomNavigation(),
+      home: CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          middle: Text(
+            'Plan Dial',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          border: Border(),
+          backgroundColor: CupertinoColors.white,
+        ),
+        child: BottomNavigation(),
+      ),
     );
   }
 }
