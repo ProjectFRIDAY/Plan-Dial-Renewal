@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'Add_Dial.dart';
+import 'Check_List.dart';
 
 // Page 정보 & TimeTable 안의 Week and Today page
 class TimeTablePage extends StatefulWidget {
@@ -146,7 +147,6 @@ class WeekPage extends StatelessWidget {
           'Week',
           style: TextStyle(fontSize: 25),
         ),
-        Text('currentValue가 0입니다.'),
       ],
     );
   }
@@ -160,23 +160,16 @@ class TodayPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: const [
-            Padding(padding: EdgeInsets.fromLTRB(15, 0, 0, 0)),
-            Text(
-              '오늘 실천 완료한 계획을 눌러 체크하세요!',
+        Row(children: const [
+          Padding(padding: EdgeInsets.fromLTRB(15, 0, 0, 0)),
+          Text('오늘 실천 완료한 계획을 눌러 체크하세요!',
               style: TextStyle(
                   color: CupertinoColors.black,
                   fontSize: 17,
-                  fontWeight: FontWeight.w500),
-            ),
-          ],
-        ),
-        const Text(
-          'Today',
-          style: TextStyle(fontSize: 25),
-        ),
-        const Text('currentValue가 1입니다.'),
+                  fontWeight: FontWeight.w500)),
+        ]),
+        const SizedBox(height: 10),
+        const CheckBox(),
       ],
     );
   }
