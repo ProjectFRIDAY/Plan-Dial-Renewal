@@ -9,23 +9,25 @@ class AddDialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+        title: 'Plan Dial',
+        theme: CupertinoThemeData(brightness: Brightness.light),
         home: CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text(
-          'Plan Dial',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-        border: Border(),
-        backgroundColor: CupertinoColors.white,
-      ),
-      child: Column(children: const [
-        AddDialTop(),
-        Text(
-          '다이얼 추가 페이지 입니다.',
-          style: TextStyle(fontSize: 20),
-        )
-      ]),
-    ));
+          navigationBar: const CupertinoNavigationBar(
+            middle: Text(
+              'Plan Dial',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            border: Border(),
+            backgroundColor: CupertinoColors.white,
+          ),
+          child: Column(children: const [
+            AddDialTop(),
+            Text(
+              '다이얼 추가 페이지 입니다.',
+              style: TextStyle(fontSize: 20),
+            )
+          ]),
+        ));
   }
 }
 

@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const CupertinoApp(
       title: 'Plan Dial',
+      theme: CupertinoThemeData(brightness: Brightness.light),
       home: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: Text(
