@@ -6,16 +6,19 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+import 'Add_Dial.dart';
 
 // Page 정보 & TimeTable 안의 Week and Today page
-class PageSegmentedControl extends StatefulWidget {
-  const PageSegmentedControl({Key? key}) : super(key: key);
+class TimeTablePage extends StatefulWidget {
+  const TimeTablePage({Key? key}) : super(key: key);
 
   @override
-  State createState() => SegmentedControlState();
+  State createState() => TimeTablePageState();
 }
 
-class SegmentedControlState extends State<PageSegmentedControl> {
+class TimeTablePageState extends State<TimeTablePage> {
   final Map<int, Widget> children = const <int, Widget>{
     0: Text('Week'),
     1: Text('            Today            '),
@@ -37,17 +40,22 @@ class SegmentedControlState extends State<PageSegmentedControl> {
           Column(
             children: [TodayTop(), TodayPage()],
           ),
+        const Spacer(),
         CupertinoSlidingSegmentedControl<int>(
-              children: children,
-              onValueChanged: (int? newValue) {
-                setState(() {
-                  currentValue = newValue;
-                });
-              },
-              groupValue: currentValue,
-            ),
-          ],
-        ));
+          padding: EdgeInsets.all(4),
+          children: children,
+          onValueChanged: (int? newValue) {
+            setState(() {
+              currentValue = newValue;
+            });
+          },
+          groupValue: currentValue,
+        ),
+        const SizedBox(
+          height: 25,
+        )
+      ],
+    ));
   }
 }
 
@@ -65,16 +73,26 @@ class WeekTop extends StatelessWidget {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(children: const [
-                      Text("TimeTable",
+                    Row(children: [
+                      const Text("TimeTable",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 25)),
-                      Padding(padding: EdgeInsets.fromLTRB(0, 0, 7, 0)),
-                      Icon(CupertinoIcons.trash,
-                          color: CupertinoColors.destructiveRed, size: 20),
+                      const Padding(padding: EdgeInsets.fromLTRB(0, 0, 7, 0)),
+                      CupertinoButton(
+                          padding: const EdgeInsets.all(0.0),
+                          minSize: 0,
+                          onPressed: () {},
+                          child: const Icon(CupertinoIcons.trash,
+                              color: CupertinoColors.destructiveRed, size: 20)),
                     ]),
-                    const Icon(CupertinoIcons.add,
-                        color: CupertinoColors.activeBlue, size: 25),
+                    CupertinoButton(
+                        padding: const EdgeInsets.all(0.0),
+                        minSize: 0,
+                        onPressed: () => Navigator.of(context).push(
+                            CupertinoPageRoute<void>(
+                                builder: (BuildContext context) =>
+                                    const AddDialPage())),
+                        child: const Icon(CupertinoIcons.add, size: 25)),
                   ]),
               flex: 30),
           Flexible(child: Container(), flex: 2),
@@ -100,7 +118,7 @@ class TodayTop extends StatelessWidget {
           children: [
             Flexible(child: Container(), flex: 1),
             const Flexible(
-                child: Text("To Do",
+                child: Text("To Do List",
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
                 flex: 30),

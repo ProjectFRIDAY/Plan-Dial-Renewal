@@ -52,7 +52,7 @@ class BottomNavigation extends StatelessWidget {
           case 0:
             return const MyHomePage();
           case 1:
-            return const PageSegmentedControl();
+            return const TimeTablePage();
           default:
             return const MyHomePage();
         }
