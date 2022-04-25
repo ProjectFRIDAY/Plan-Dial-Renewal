@@ -6,12 +6,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-import 'Add_Dial.dart';
-import 'Check_List.dart';
+import 'add_dial.dart';
+import 'check_list.dart';
 
-// Page 정보 & TimeTable 안의 Week and Today page
+// TimeTable slid sement control (하단에 Week & Today 버튼)
 class TimeTablePage extends StatefulWidget {
   const TimeTablePage({Key? key}) : super(key: key);
 
@@ -35,11 +34,11 @@ class TimeTablePageState extends State<TimeTablePage> {
         // Week Page & Today Page 구분
         if (currentValue == 0)
           Column(
-            children: [WeekTop(), WeekPage()],
+            children: const [WeekTop(), WeekPage()],
           )
         else
           Column(
-            children: [TodayTop(), TodayPage()],
+            children: const [TodayTop(), TodayPage()],
           ),
         const Spacer(),
         CupertinoSlidingSegmentedControl<int>(
@@ -60,7 +59,7 @@ class TimeTablePageState extends State<TimeTablePage> {
   }
 }
 
-// Week Page의 이름과 전체 삭제, 플러스 아이콘 & divider line
+// Week Page 상단 부분
 class WeekTop extends StatelessWidget {
   const WeekTop({Key? key}) : super(key: key);
 
@@ -107,7 +106,7 @@ class WeekTop extends StatelessWidget {
   }
 }
 
-// Today Page의 이름 & divider line
+// Today Page 상단부분
 class TodayTop extends StatelessWidget {
   const TodayTop({Key? key}) : super(key: key);
 
@@ -169,7 +168,7 @@ class TodayPage extends StatelessWidget {
                   fontWeight: FontWeight.w500)),
         ]),
         const SizedBox(height: 10),
-        const CheckBox(),
+        const CheckList()
       ],
     );
   }

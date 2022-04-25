@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:plan_dial_renewal/screens/time_table.dart';
 
-// 다이얼 생성 페이지
+// Add Dial Page
 class AddDialPage extends StatelessWidget {
   const AddDialPage({Key? key}) : super(key: key);
 
@@ -10,7 +9,7 @@ class AddDialPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoApp(
         title: 'Plan Dial',
-        theme: CupertinoThemeData(brightness: Brightness.light),
+        theme: const CupertinoThemeData(brightness: Brightness.light),
         home: CupertinoPageScaffold(
           navigationBar: const CupertinoNavigationBar(
             middle: Text(
@@ -31,7 +30,7 @@ class AddDialPage extends StatelessWidget {
   }
 }
 
-// 다이얼 생성페이지의 상단 부분
+// Add Dial Page 상단부분
 class AddDialTop extends StatelessWidget {
   const AddDialTop({Key? key}) : super(key: key);
 
