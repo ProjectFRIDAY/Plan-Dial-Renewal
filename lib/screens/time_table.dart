@@ -81,7 +81,31 @@ class WeekTop extends StatelessWidget {
                       CupertinoButton(
                           padding: const EdgeInsets.all(0.0),
                           minSize: 0,
-                          onPressed: () {},
+                          onPressed: () {
+                            showCupertinoDialog(
+                                context: context,
+                                builder: (context) {
+                                  return CupertinoAlertDialog(
+                                    title: const Text('전체 일정 삭제'),
+                                    content: const Text(
+                                        '\'확인\'을 누르시면 모든 일정이 삭제됩니다.'),
+                                    actions: [
+                                      CupertinoDialogAction(
+                                          isDefaultAction: true,
+                                          child: const Text("확인"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          }),
+                                      CupertinoDialogAction(
+                                          isDefaultAction: true,
+                                          child: const Text("취소"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          }),
+                                    ],
+                                  );
+                                });
+                          },
                           child: const Icon(CupertinoIcons.trash,
                               color: CupertinoColors.destructiveRed, size: 20)),
                     ]),
