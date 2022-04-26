@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'select_page.dart';
 
 bool isFinish = false;
 
@@ -9,30 +10,27 @@ class AddDialPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
-        title: 'Plan Dial',
-        theme: const CupertinoThemeData(brightness: Brightness.light),
-        home: CupertinoPageScaffold(
-          navigationBar: const CupertinoNavigationBar(
-            middle: Text(
-              'Plan Dial',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-            border: Border(),
-            backgroundColor: CupertinoColors.white,
-          ),
-          child: Column(children: const [
-            AddDialTop(),
-            AddDialName(),
-            AddDialDay(),
-            AddDialTime(),
-            Spacer(),
-            AddButton(),
-            SizedBox(
-              height: 80,
-            )
-          ]),
-        ));
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text(
+          'Plan Dial',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        border: Border(),
+        backgroundColor: CupertinoColors.white,
+      ),
+      child: Column(children: const [
+        AddDialTop(),
+        AddDialName(),
+        AddDialDay(),
+        AddDialTime(),
+        Spacer(),
+        AddButton(),
+        SizedBox(
+          height: 80,
+        )
+      ]),
+    );
   }
 }
 
@@ -47,25 +45,10 @@ class AddDialTop extends StatelessWidget {
         Row(
           children: [
             Flexible(child: Container(), flex: 1),
-            Flexible(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("일정추가",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25)),
-                    CupertinoButton(
-                        padding: const EdgeInsets.all(0.0),
-                        minSize: 0,
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).pop();
-                        },
-                        child: const Text(
-                          '취소',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )),
-                  ],
-                ),
+            const Flexible(
+                child: Text("일정추가",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
                 flex: 30),
             Flexible(child: Container(), flex: 2),
           ],
@@ -149,7 +132,10 @@ class _AddDialDayState extends State<AddDialDay> {
                   fontWeight: FontWeight.w600))
         ],
       ),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).push(CupertinoPageRoute<void>(
+            builder: (BuildContext context) => const SelectDayPage()));
+      },
     ));
   }
 }
@@ -190,11 +176,14 @@ class _AddDialTimeState extends State<AddDialTime> {
                   fontWeight: FontWeight.w600))
         ],
       ),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).push(createRoute());
+      },
     ));
   }
 }
 
+// 확인버튼
 class AddButton extends StatefulWidget {
   const AddButton({Key? key}) : super(key: key);
 
