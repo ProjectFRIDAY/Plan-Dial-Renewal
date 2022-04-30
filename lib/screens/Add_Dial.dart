@@ -19,13 +19,15 @@ class AddDialPage extends StatelessWidget {
         border: Border(),
         backgroundColor: CupertinoColors.white,
       ),
-      child: Column(children: const [
+      child: Column(children: [
         AddDialTop(),
         AddDialName(),
         AddDialDay(),
         AddDialTime(),
         Spacer(),
-        AddButton(),
+        Stack(
+          children: [if (isFinish) AddButton() else SelectTimePage()],
+        ),
         SizedBox(
           height: 80,
         )

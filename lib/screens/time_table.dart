@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'add_dial.dart';
+import 'calendar.dart';
 import 'check_list.dart';
 
 // TimeTable slid sement control (하단에 Week & Today 버튼)
@@ -34,7 +35,11 @@ class TimeTablePageState extends State<TimeTablePage> {
         // Week Page & Today Page 구분
         if (currentValue == 0)
           Column(
-            children: const [WeekTop(), WeekPage()],
+            children: const [
+              WeekTop(),
+              // Week Page == Calendar
+              SizedBox(height: 500, child: Calendar())
+            ],
           )
         else
           Column(
@@ -152,23 +157,6 @@ class TodayTop extends StatelessWidget {
         const Divider(
           color: CupertinoColors.black,
           height: 20,
-        ),
-      ],
-    );
-  }
-}
-
-// Week Page
-class WeekPage extends StatelessWidget {
-  const WeekPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: const [
-        Text(
-          'Week',
-          style: TextStyle(fontSize: 25),
         ),
       ],
     );
