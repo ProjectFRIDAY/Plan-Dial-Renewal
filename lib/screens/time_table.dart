@@ -1,9 +1,3 @@
-/*
-할일!
-1. UI적인 부분을 절대적인 값 말고 상대적인 값으로 변경해서 display 비율에 따라 자동 조정 기능 고려하기
-2. 46line : 사이즈 맞추는 용도로 띄어쓰기를 함. ,UI 불안정할 시 수정
-*/
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

@@ -28,7 +28,7 @@ class AddDialPage extends StatelessWidget {
         Stack(
           children: [if (isFinish) AddButton() else SelectTimePage()],
         ),
-        SizedBox(
+        const SizedBox(
           height: 80,
         )
       ]),
@@ -70,7 +70,7 @@ class AddDialName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(15),
+      padding: const EdgeInsets.all(15),
       child: Row(
         children: [
           Expanded(
