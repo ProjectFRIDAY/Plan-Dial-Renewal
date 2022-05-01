@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   cupertino_list_tile: ^0.2.0
+  syncfusion_flutter_calendar: ^20.1.51
 
 dev_dependencies:
   flutter_test:

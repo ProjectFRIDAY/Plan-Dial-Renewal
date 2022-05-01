@@ -112,7 +112,7 @@ class SelectTimePage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
+        const SizedBox(
           width: double.infinity,
         ),
         CupertinoButton(

@@ -19,14 +19,16 @@ class AddDialPage extends StatelessWidget {
         border: Border(),
         backgroundColor: CupertinoColors.white,
       ),
-      child: Column(children: const [
+      child: Column(children: [
         AddDialTop(),
         AddDialName(),
         AddDialDay(),
         AddDialTime(),
         Spacer(),
-        AddButton(),
-        SizedBox(
+        Stack(
+          children: [if (isFinish) AddButton() else SelectTimePage()],
+        ),
+        const SizedBox(
           height: 80,
         )
       ]),
@@ -68,7 +70,7 @@ class AddDialName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(15),
+      padding: const EdgeInsets.all(15),
       child: Row(
         children: [
           Expanded(

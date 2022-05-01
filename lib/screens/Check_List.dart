@@ -1,7 +1,4 @@
-//padding은 앱 크기에 맞게 설정해야하는 데 이 부분은 나중에
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class CheckList extends StatefulWidget {
   const CheckList({Key? key}) : super(key: key);
@@ -16,7 +13,7 @@ class _CheckListState extends State<CheckList> {
     return ListView(
       shrinkWrap: true,
       padding: const EdgeInsets.all(8),
-      children: const [CheckBox()],
+      children: const [CheckBox(), CheckBox(), CheckBox(), CheckBox()],
     );
   }
 }
