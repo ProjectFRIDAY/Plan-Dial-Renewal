@@ -1,5 +1,6 @@
-import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:plan_dial_renewal/models/dial.dart';
+import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
 
 void main() {
@@ -60,37 +61,54 @@ class BottomNavigation extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> implements Observer {
+  _MyHomePageState() {
+    DialManager().addObserver(this);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var urgentDial = DialManager().getUrgentDial();
+
     return CupertinoPageScaffold(
       child: SafeArea(
         child: Column(
           children: [
             const ListIndexWidget("Next"),
-            const MainTile(
-              title: '재활용 쓰레기 버리기',
-              subtitle: '10분 전',
-              icon: Icon(
+            MainTile(
+              title: urgentDial != null ? urgentDial.name : "다이얼이 없음",
+              subtitle: urgentDial != null
+                  ? Dial.secondsToString(urgentDial.getLeftTimeInSeconds())
+                  : "다이얼이 없음",
+              icon: const Icon(
                 CupertinoIcons.alarm_fill,
                 color: CupertinoColors.systemRed,
                 size: 50,
               ),
             ),
             const ListIndexWidget("Dial"),
-            Expanded(child: ListViewWidget(CupertinoColors.systemBlue)),
+            Expanded(child: ListViewWidget(CupertinoColors.systemBlue))
           ],
           crossAxisAlignment: CrossAxisAlignment.stretch,
         ),
       ),
     );
   }
+
+  @override
+  void onChanged() {
+    setState(() {});
+  }
 }
 
-// 추후 동적 생성으로 변경 필요
-class ListViewWidget extends StatelessWidget {
+class ListViewWidget extends StatefulWidget {
   late final Icon icon;
 
   ListViewWidget(Color color, {Key? key}) : super(key: key) {
@@ -102,25 +120,27 @@ class ListViewWidget extends StatelessWidget {
   }
 
   @override
+  _ListViewState createState() => _ListViewState();
+}
+
+class _ListViewState extends State<ListViewWidget> implements Observer {
+  @override
   Widget build(BuildContext context) {
+    var dials = DialManager().getAllDials();
+    dials.sort(
+        (a, b) => a.getLeftTimeInSeconds().compareTo(b.getLeftTimeInSeconds()));
+    if (dials.isNotEmpty) dials.removeAt(0);
+
     return ListView(
-      children: [
-        CupertinoListTile(
-          //leading. 타일 앞에 표시되는 위젯. 참고로 타일 뒤에는 trailing 위젯으로 사용 가능
-          leading: icon,
-          title: const Text('빨래하기'),
-          subtitle: const Text('30분 전'),
-          border: const Border(),
-        ),
-        CupertinoListTile(
-          //leading. 타일 앞에 표시되는 위젯. 참고로 타일 뒤에는 trailing 위젯으로 사용 가능
-          leading: icon,
-          title: const Text('세탁하기'),
-          subtitle: const Text('50분 전'),
-          border: const Border(),
-        ),
-      ],
+      children: List.generate(dials.length, (i) {
+        return dials[i].toListTile(widget.icon);
+      }),
     );
+  }
+
+  @override
+  void onChanged() {
+    setState(() {});
   }
 }
 

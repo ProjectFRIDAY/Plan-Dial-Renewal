@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:plan_dial_renewal/models/dial_manager.dart';
 
 class CheckList extends StatefulWidget {
   const CheckList({Key? key}) : super(key: key);
@@ -10,17 +11,23 @@ class CheckList extends StatefulWidget {
 class _CheckListState extends State<CheckList> {
   @override
   Widget build(BuildContext context) {
+    final todayDials = DialManager().getTodayDials();
+
     return ListView(
       shrinkWrap: true,
       padding: const EdgeInsets.all(8),
-      children: const [CheckBox(), CheckBox(), CheckBox(), CheckBox()],
+      children: List.generate(todayDials.length, (i) {
+        return CheckBox(todayDials[i].name);
+      }),
     );
   }
 }
 
 // To Do List Check Box
 class CheckBox extends StatefulWidget {
-  const CheckBox({Key? key}) : super(key: key);
+  final String title;
+
+  const CheckBox(this.title, {Key? key}) : super(key: key);
 
   @override
   State<CheckBox> createState() => _CheckBoxTestState();
@@ -28,13 +35,14 @@ class CheckBox extends StatefulWidget {
 
 class _CheckBoxTestState extends State<CheckBox> {
   bool state = false;
+
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
         pressedOpacity: 1,
-        child: const Text(
-          '빨래하기',
-          style: TextStyle(
+        child: Text(
+          widget.title,
+          style: const TextStyle(
               color: CupertinoColors.white, fontWeight: FontWeight.bold),
         ),
         color: state ? CupertinoColors.activeBlue : CupertinoColors.systemGrey4,
