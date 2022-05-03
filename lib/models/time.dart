@@ -17,6 +17,16 @@ class Time {
     }
   }
 
+  @override
+  String toString() {
+    return hour.toString() + ":" + minute.toString();
+  }
+
+  static Time parse(String string) {
+    var split = string.split(":");
+    return Time(int.parse(split[0]), int.parse(split[1]));
+  }
+
   static Time now() {
     final now = DateTime.now();
     return Time(now.hour, now.minute);

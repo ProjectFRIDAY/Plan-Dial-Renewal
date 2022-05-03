@@ -26,4 +26,15 @@ class Schedule {
       color: color,
     );
   }
+
+  @override
+  String toString() {
+    return start.toString() + "~" + finish.toString();
+  }
+
+  static Schedule? parse(String string) {
+    if (string.isEmpty) return null;
+    var split = string.split("~");
+    return Schedule(Time.parse(split[0]), Time.parse(split[1]));
+  }
 }

@@ -44,29 +44,31 @@ class WeekSchedule {
     }
   }
 
-  /// 가장 가까운 일정이 있는 요일의 일정을 반환하는 함수 (오늘 제외)
-  Schedule? getNearestSchedule(int weekdayIndex) {
+  /// 가장 가까운 일정이 있는 요일을 반환하는 함수
+  int getNearestSchedule(int weekdayIndex) {
+    if (getScheduleByIndex(weekdayIndex) != null) return weekdayIndex;
+
     int index = weekdayIndex % 7 + 1;
 
     while (index != weekdayIndex) {
-      final schedule = getScheduleByIndex(weekdayIndex);
-      if (schedule != null) return schedule;
+      final schedule = getScheduleByIndex(index);
+      if (schedule != null) return index;
       index = index % 7 + 1;
     }
 
-    return null;
+    return 0;
   }
 
   /// 스케줄들을 Appointment로 반환하는 함수
   List<Appointment> toAppointments(String title, Color color) {
-    var result = List<Appointment>.empty();
+    var result = List<Appointment>.empty(growable: true);
 
     DateTime baseDate = DateTime.now();
     Duration baseDuration = const Duration(days: 1);
-    baseDate.subtract(Duration(days: baseDate.weekday));
+    baseDate = baseDate.subtract(Duration(days: baseDate.weekday));
 
     for (int i = 1; i <= 7; ++i) {
-      baseDate.add(baseDuration);
+      baseDate = baseDate.add(baseDuration);
       var schedule = getScheduleByIndex(i);
       if (schedule != null) {
         result.add(schedule.toAppointment(title, color, baseDate));

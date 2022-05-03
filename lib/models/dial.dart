@@ -1,5 +1,5 @@
-import 'dart:ui';
-
+import 'package:cupertino_list_tile/cupertino_list_tile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:plan_dial_renewal/models/time.dart';
 import 'package:plan_dial_renewal/models/week_schedule.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -7,7 +7,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 /// Default Dial Class
 class Dial {
   String name;
-  final int id;
+  int id;
   DateTime startTime;
 
   bool disabled;
@@ -15,7 +15,7 @@ class Dial {
 
   Dial(
       {required this.name,
-      required this.id,
+      this.id = -1,
       required this.startTime,
       this.disabled = false,
       required this.weekSchedule});
@@ -29,17 +29,27 @@ class Dial {
       return startTime;
     } else {
       final weekday = now.weekday;
-      final todaySchedule = weekSchedule.getScheduleByIndex(weekday);
+      int nearestWeekday = weekSchedule.getNearestSchedule(weekday);
 
-      if (todaySchedule == null ||
-          !todaySchedule.start.isLaterThan(Time.now())) {
-        return weekSchedule
-            .getNearestSchedule(weekday)
-            ?.start
-            .toDateTime(now.year, now.month, now.day);
-      } else {
-        return todaySchedule.start.toDateTime(now.year, now.month, now.day);
+      if (nearestWeekday == 0) return null;
+
+      int cha = nearestWeekday - weekday;
+      var schedule = weekSchedule.getScheduleByIndex(nearestWeekday);
+
+      if (schedule != null &&
+          cha == 0 &&
+          Time(now.hour, now.minute).isLaterThan(schedule.start)) {
+        nearestWeekday = weekSchedule.getNearestSchedule(weekday % 7 + 1);
+        cha = nearestWeekday - weekday;
+        if (cha == 0) cha = 7;
+        schedule = weekSchedule.getScheduleByIndex(nearestWeekday);
       }
+
+      if (cha < 0) cha += 7;
+
+      return schedule?.start
+          .toDateTime(now.year, now.month, now.day)
+          .add(Duration(days: cha));
     }
   }
 
@@ -56,14 +66,16 @@ class Dial {
   }
 
   static String secondsToString(int seconds) {
+    assert(seconds >= 0);
+
     if (seconds >= 60 * 60 * 24) {
-      seconds %= (60 * 60 * 24);
+      seconds = (seconds / (60 * 60 * 24)).floor();
       return seconds.toString() + "일 전";
     } else if (seconds >= 60 * 60) {
-      seconds %= (60 * 60);
+      seconds = (seconds / (60 * 60)).floor();
       return seconds.toString() + "시간 전";
     } else {
-      seconds %= 60;
+      seconds = (seconds / 60).floor();
       return seconds.toString() + "분 전";
     }
   }
@@ -76,5 +88,14 @@ class Dial {
   /// 스케줄들을 Appointment로 반환하는 함수
   List<Appointment> toAppointments(Color color) {
     return weekSchedule.toAppointments(name, color);
+  }
+
+  CupertinoListTile toListTile(Icon icon) {
+    return CupertinoListTile(
+      leading: icon,
+      title: Text(name),
+      subtitle: Text(secondsToString(getLeftTimeInSeconds())),
+      border: const Border(),
+    );
   }
 }
