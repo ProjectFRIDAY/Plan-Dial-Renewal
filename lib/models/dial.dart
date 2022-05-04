@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:plan_dial_renewal/models/time.dart';
 import 'package:plan_dial_renewal/models/week_schedule.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 /// Default Dial Class
 class Dial {
@@ -7,17 +10,15 @@ class Dial {
   final int id;
   DateTime startTime;
 
-  int? durationInSeconds;
   bool disabled;
-  WeekSchedule schedule;
+  WeekSchedule weekSchedule;
 
   Dial(
       {required this.name,
       required this.id,
       required this.startTime,
-      this.durationInSeconds,
       this.disabled = false,
-      required this.schedule});
+      required this.weekSchedule});
 
   /// 현재로부터 가장 가까운 알람 시기를 리턴하는 함수.
   DateTime? getNearestDateTime() {
@@ -28,14 +29,16 @@ class Dial {
       return startTime;
     } else {
       final weekday = now.weekday;
-      final todaySchedule = schedule.getTimeByIndex(weekday);
+      final todaySchedule = weekSchedule.getScheduleByIndex(weekday);
 
-      if (todaySchedule == null || !todaySchedule.isLaterThan(Time.now())) {
-        return schedule
-            .getNearestTime(weekday)
-            ?.toDateTime(now.year, now.month, now.day);
+      if (todaySchedule == null ||
+          !todaySchedule.start.isLaterThan(Time.now())) {
+        return weekSchedule
+            .getNearestSchedule(weekday)
+            ?.start
+            .toDateTime(now.year, now.month, now.day);
       } else {
-        return todaySchedule.toDateTime(now.year, now.month, now.day);
+        return todaySchedule.start.toDateTime(now.year, now.month, now.day);
       }
     }
   }
@@ -48,7 +51,7 @@ class Dial {
     if (date == null) {
       return -1;
     } else {
-      return now.difference(date).inSeconds;
+      return date.difference(now).inSeconds;
     }
   }
 
@@ -63,5 +66,15 @@ class Dial {
       seconds %= 60;
       return seconds.toString() + "분 전";
     }
+  }
+
+  /// 해당 요일에 스케줄이 있는지 확인하는 함수
+  bool hasSchedule(int weekday) {
+    return weekSchedule.getScheduleByIndex(weekday) != null;
+  }
+
+  /// 스케줄들을 Appointment로 반환하는 함수
+  List<Appointment> toAppointments(Color color) {
+    return weekSchedule.toAppointments(name, color);
   }
 }
