@@ -19,16 +19,13 @@ class AddDialPage extends StatelessWidget {
         border: Border(),
         backgroundColor: CupertinoColors.white,
       ),
-      child: Column(children: [
+      child: Column(children: const [
         AddDialTop(),
         AddDialName(),
         AddDialDay(),
         AddDialTime(),
         Spacer(),
-        Stack(
-          children: [if (isFinish) AddButton() else SelectTimePage()],
-        ),
-        const SizedBox(
+        SizedBox(
           height: 80,
         )
       ]),
@@ -178,9 +175,7 @@ class _AddDialTimeState extends State<AddDialTime> {
                   fontWeight: FontWeight.w600))
         ],
       ),
-      onPressed: () {
-        Navigator.of(context).push(createRoute());
-      },
+      onPressed: () {},
     ));
   }
 }
