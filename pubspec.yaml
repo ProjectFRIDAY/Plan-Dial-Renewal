@@ -38,6 +38,9 @@ dependencies:
   cupertino_list_tile: ^0.2.0
   syncfusion_flutter_calendar: ^20.1.51
 
+  sqflite:
+  path:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
