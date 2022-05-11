@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'select_page.dart';
 
 bool isFinish = false;
@@ -149,34 +150,38 @@ class AddDialTime extends StatefulWidget {
 class _AddDialTimeState extends State<AddDialTime> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: CupertinoButton(
-      child: Row(
-        children: [
-          Expanded(
-            child: CupertinoTextField(
-              enabled: false,
-              decoration: BoxDecoration(
-                  color: CupertinoColors.black,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(width: 1.5, color: CupertinoColors.black)),
-              placeholder: "Ex) 6:00 AM ~ 8:30 PM",
-              placeholderStyle: TextStyle(color: CupertinoColors.inactiveGray),
-              padding: EdgeInsets.all(10),
-              style: TextStyle(fontSize: 16),
+    return CupertinoButton(
+        child: Row(
+          children: [
+            Expanded(
+              child: CupertinoTextField(
+                enabled: false,
+                decoration: BoxDecoration(
+                    color: CupertinoColors.black,
+                    borderRadius: BorderRadius.circular(12),
+                    border:
+                        Border.all(width: 1.5, color: CupertinoColors.black)),
+                placeholder: "Ex) 6:00 AM ~ 8:30 PM",
+                placeholderStyle:
+                    TextStyle(color: CupertinoColors.inactiveGray),
+                padding: EdgeInsets.all(10),
+                style: TextStyle(fontSize: 16),
+              ),
             ),
-          ),
-          const SizedBox(
-            width: 16,
-          ),
-          const Text('에 할게요',
-              style: TextStyle(
-                  color: CupertinoColors.activeBlue,
-                  fontWeight: FontWeight.w600))
-        ],
-      ),
-      onPressed: () {},
-    ));
+            const SizedBox(
+              width: 16,
+            ),
+            const Text('에 할게요',
+                style: TextStyle(
+                    fontSize: 17,
+                    color: CupertinoColors.activeBlue,
+                    fontWeight: FontWeight.w600))
+          ],
+        ),
+        onPressed: () {
+          Navigator.of(context).push(CupertinoPageRoute<void>(
+              builder: (BuildContext context) => const SelectTimePage()));
+        });
   }
 }
 
