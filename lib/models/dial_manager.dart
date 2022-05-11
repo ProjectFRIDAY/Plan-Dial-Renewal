@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/week_schedule.dart';
-import 'package:plan_dial_renewal/utils/databases/db_manager.dart';
+import 'package:plan_dial_renewal/utils/db_manager.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+
+import '../utils/noti_manager.dart';
 
 class DialManager {
   static final DialManager _instance = DialManager._internal();
@@ -20,6 +22,7 @@ class DialManager {
   Future<void> loadDialsFromDb() async {
     /* TEST CODE */
     // await DbManager().clear();
+    // await NotiManager().removeAllNotifications();
     // await addDial("다이얼1", DateTime.now(), WeekSchedule(monday: Schedule(Time(15, 30)), tuesday: Schedule(Time(20, 30))));
     // await addDial("다이얼2", DateTime.now(), WeekSchedule(friday: Schedule(Time(17, 30))));
     // await addDial("다이얼3", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(1, 30))), disabled: true);
@@ -32,13 +35,14 @@ class DialManager {
     return dials.length;
   }
 
-  Dial getDialByIndex(int index) {
-    return dials[index];
+  Dial getDialById(int id) {
+    return dials[id];
   }
 
-  void removeDialByIndex(int index) {
-    dials.remove(index);
-    DbManager().deleteDialByIndex(index);
+  void removeDialById(int id) {
+    dials.remove(id);
+    DbManager().deleteDialByIndex(id);
+    NotiManager().removeNotification(id);
     notifyObservers();
   }
 
@@ -48,6 +52,8 @@ class DialManager {
 
   Future<void> addDial(String name, DateTime startTime, WeekSchedule schedule,
       {bool disabled = false}) async {
+    assert(!schedule.isEmpty(), "일정이 없는 다이얼은 생성할 수 없습니다.");
+
     var dial = Dial(
       name: name,
       startTime: startTime,
@@ -58,11 +64,22 @@ class DialManager {
     int id = await DbManager().addDial(dial);
     dial.id = id;
     dials[id] = dial;
+
+    if (!disabled) {
+      NotiManager().addNotification(id, name, dial.getFirstDateTime());
+    }
+
     notifyObservers();
   }
 
   void updateDial(Dial dial) {
     DbManager().updateDial(dial);
+    if (dial.disabled) {
+      NotiManager().removeNotification(dial.id);
+    } else {
+      NotiManager()
+          .updateNotification(dial.id, dial.name, dial.getFirstDateTime());
+    }
     notifyObservers();
   }
 
