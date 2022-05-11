@@ -77,4 +77,14 @@ class WeekSchedule {
 
     return result;
   }
+
+  bool isEmpty() {
+    return (monday == null &&
+        tuesday == null &&
+        wednesday == null &&
+        thursday == null &&
+        friday == null &&
+        saturday == null &&
+        sunday == null);
+  }
 }

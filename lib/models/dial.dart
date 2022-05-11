@@ -117,4 +117,28 @@ class Dial {
       border: const Border(),
     );
   }
+
+  /// 알림의 최초 실행 날짜 및 시간 구하기
+  DateTime getFirstDateTime() {
+    const day = Duration(days: 1);
+    var now = DateTime.now();
+    var tmp = DateTime(startTime.year, startTime.month, startTime.day);
+
+    for (int i = 0; i < 8; i++) {
+      var schedule = weekSchedule.getScheduleByIndex(tmp.weekday);
+
+      if (schedule != null) {
+        var result = schedule.start.toDateTime(tmp.year, tmp.month, tmp.day);
+
+        if (i > 0 || result.isAfter(now)) {
+          return result;
+        }
+      }
+
+      tmp = tmp.add(day);
+    }
+
+    assert(false, "최초 실행 시간을 구할 수 없습니다.");
+    return startTime;
+  }
 }

@@ -3,6 +3,8 @@ import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
 
+import '../utils/noti_manager.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -12,6 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    NotiManager();
     return const CupertinoApp(
       title: 'Plan Dial',
       theme: CupertinoThemeData(brightness: Brightness.light),
