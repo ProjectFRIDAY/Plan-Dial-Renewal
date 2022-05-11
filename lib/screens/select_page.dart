@@ -53,7 +53,7 @@ class _SelectDayListState extends State<SelectDayList> {
 // Day select Button
 class SelectDayButton extends StatefulWidget {
   final String dayName;
-  const SelectDayButton(this.dayName) : super();
+  SelectDayButton(this.dayName) : super();
 
   @override
   State<SelectDayButton> createState() => _SelectDayButtonState();
@@ -108,24 +108,81 @@ class SelectTimePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const SizedBox(
-          width: double.infinity,
+    return const CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(
+          'Plan Dial',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
-        CupertinoButton(
-            child: const Text(
-              '확인',
-              style: TextStyle(
-                  color: CupertinoColors.white, fontWeight: FontWeight.bold),
+        border: Border(),
+        backgroundColor: CupertinoColors.white,
+      ),
+      child: SelectTimePicker(),
+    );
+  }
+}
+
+// SelectTimePicker
+class SelectTimePicker extends StatefulWidget {
+  const SelectTimePicker({Key? key}) : super(key: key);
+
+  @override
+  State<SelectTimePicker> createState() => _SelectTimePickerState();
+}
+
+class _SelectTimePickerState extends State<SelectTimePicker> {
+  final Map<int, Widget> children = const <int, Widget>{
+    0: Text('시작시간'),
+    1: Text('          마감시간          '),
+  };
+
+  int? currentValue = 0;
+  DateTime _startTime = DateTime.now();
+  DateTime _stopTime = DateTime.now();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: CupertinoColors.white,
+      child: Column(
+        children: [
+          if (currentValue == 0)
+            Expanded(
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.time,
+                onDateTimeChanged: (value) {
+                  _startTime = value;
+                },
+                initialDateTime: DateTime.now(),
+              ),
+            )
+          else
+            Expanded(
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.time,
+                onDateTimeChanged: (value) {
+                  _stopTime = value;
+                },
+                initialDateTime: DateTime.now(),
+              ),
             ),
-            color: CupertinoColors.activeBlue,
-            onPressed: () {
-              Navigator.pop(context);
-            })
-      ],
+          CupertinoSlidingSegmentedControl<int>(
+            padding: EdgeInsets.all(4),
+            children: children,
+            onValueChanged: (int? newValue) {
+              setState(() {
+                currentValue = newValue;
+              });
+            },
+            groupValue: currentValue,
+          ),
+          Text(_startTime.toString()),
+          Text(_stopTime.toString()),
+          const SizedBox(
+            height: 30,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -133,7 +190,7 @@ class SelectTimePage extends StatelessWidget {
 // SelectTimePage Route
 Route createRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => SelectTimePage(),
+    pageBuilder: (context, animation, secondaryAnimation) => SelectTimePicker(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(0.0, 1.0);
       var end = Offset.zero;
