@@ -5,6 +5,8 @@ import 'package:plan_dial_renewal/utils/databases/db_manager.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class DialManager {
+  static const dayChangeHour = 4;
+
   static final DialManager _instance = DialManager._internal();
   static final Map dials = <int, Dial>{};
   static final List<Observer> _observers = List.empty(growable: true);
@@ -46,8 +48,7 @@ class DialManager {
     return dials.values.toList();
   }
 
-  Future<void> addDial(
-      String name, DateTime startTime, WeekSchedule schedule) async {
+  Future<void> addDial(String name, DateTime startTime, WeekSchedule schedule) async {
     var dial = Dial(
       name: name,
       startTime: startTime,
@@ -85,9 +86,15 @@ class DialManager {
   /// 오늘에 해당되는 다이얼 모두 리턴
   List<Dial> getTodayDials() {
     var result = List<Dial>.empty(growable: true);
+    var now = DateTime.now();
+    var last = DateTime(now.year, now.month, now.day, dayChangeHour);
+
+    if (last.isAfter(now)) {
+      last = last.subtract(const Duration(days: 1));
+    }
 
     for (Dial dial in getAllDials()) {
-      if (dial.hasSchedule(DateTime.now().weekday) && !dial.disabled) {
+      if (dial.hasScheduleIn(last, now) && !dial.disabled) {
         result.add(dial);
       }
     }
