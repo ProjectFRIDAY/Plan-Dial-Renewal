@@ -7,6 +7,8 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../utils/noti_manager.dart';
 
 class DialManager {
+  static const dayChangeHour = 4;
+
   static final DialManager _instance = DialManager._internal();
   static final Map dials = <int, Dial>{};
   static final List<Observer> _observers = List.empty(growable: true);
@@ -104,9 +106,15 @@ class DialManager {
   /// 오늘에 해당되는 다이얼 모두 리턴
   List<Dial> getTodayDials({bool containDisabled = true}) {
     var result = List<Dial>.empty(growable: true);
+    var now = DateTime.now();
+    var last = DateTime(now.year, now.month, now.day, dayChangeHour);
+
+    if (last.isAfter(now)) {
+      last = last.subtract(const Duration(days: 1));
+    }
 
     for (Dial dial in getAllDials()) {
-      if (dial.hasSchedule(DateTime.now().weekday) &&
+      if (dial.hasScheduleIn(last, now) &&
           (containDisabled || !dial.disabled)) {
         result.add(dial);
       }

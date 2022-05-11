@@ -80,9 +80,28 @@ class Dial {
     }
   }
 
-  /// 해당 요일에 스케줄이 있는지 확인하는 함수
-  bool hasSchedule(int weekday) {
-    return weekSchedule.getScheduleByIndex(weekday) != null;
+  /// 해당 기간에 스케줄이 있는지 확인하는 함수
+  bool hasScheduleIn(DateTime from, DateTime to) {
+    const day = Duration(days: 1);
+    var tmp = DateTime(from.year, from.month, from.day);
+
+    while (to.isAfter(tmp)) {
+      var schedule = weekSchedule.getScheduleByIndex(tmp.weekday);
+
+      if (schedule != null) {
+        if (to.year == tmp.year &&
+            to.month == tmp.month &&
+            to.day == from.day) {
+          return Time(to.hour, to.minute).isLaterThan(schedule.finish);
+        } else {
+          return true;
+        }
+      }
+
+      tmp = tmp.add(day);
+    }
+
+    return false;
   }
 
   /// 스케줄들을 Appointment로 반환하는 함수

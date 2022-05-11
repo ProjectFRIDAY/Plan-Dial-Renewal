@@ -43,7 +43,7 @@ class BottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     List<BottomNavigationBarItem> items = [
       const BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.star_fill), label: 'List'),
+          icon: Icon(CupertinoIcons.star_fill), label: 'Dial'),
       const BottomNavigationBarItem(
           icon: Icon(CupertinoIcons.star_fill), label: 'Time Table'),
     ];
