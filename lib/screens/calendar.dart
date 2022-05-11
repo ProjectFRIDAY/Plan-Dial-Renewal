@@ -12,12 +12,21 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    DateTime baseDate = DateTime(now.year, now.month, now.day);
+    baseDate = baseDate.subtract(Duration(days: baseDate.weekday - 1));
+
     return SfCalendar(
       view: CalendarView.week,
       timeSlotViewSettings:
           const TimeSlotViewSettings(timeInterval: Duration(hours: 2)),
       headerHeight: 0,
       dataSource: MeetingDataSource(DialManager().getAllDialsAsAppointments()),
+      firstDayOfWeek: 1,
+      maxDate: baseDate
+          .add(const Duration(days: 7))
+          .subtract(const Duration(seconds: 1)),
+      minDate: baseDate,
     );
   }
 }
