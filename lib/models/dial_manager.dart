@@ -22,7 +22,7 @@ class DialManager {
     // await DbManager().clear();
     // await addDial("다이얼1", DateTime.now(), WeekSchedule(monday: Schedule(Time(15, 30)), tuesday: Schedule(Time(20, 30))));
     // await addDial("다이얼2", DateTime.now(), WeekSchedule(friday: Schedule(Time(17, 30))));
-    // await addDial("다이얼3", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(1, 30))));
+    // await addDial("다이얼3", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(1, 30))), disabled: true);
 
     dials.addAll(await DbManager().loadAllDials());
     notifyObservers();
@@ -46,12 +46,13 @@ class DialManager {
     return dials.values.toList();
   }
 
-  Future<void> addDial(
-      String name, DateTime startTime, WeekSchedule schedule) async {
+  Future<void> addDial(String name, DateTime startTime, WeekSchedule schedule,
+      {bool disabled = false}) async {
     var dial = Dial(
       name: name,
       startTime: startTime,
       weekSchedule: schedule,
+      disabled: disabled,
     );
 
     int id = await DbManager().addDial(dial);
@@ -66,14 +67,15 @@ class DialManager {
   }
 
   /// 가장 가까운 다이얼 딱 1개 리턴
-  Dial? getUrgentDial() {
+  Dial? getUrgentDial({bool containDisabled = true}) {
     if (getDialCount() == 0) return null;
 
     int seconds = 60 * 60 * 24 * 7;
     Dial? result;
 
     for (Dial dial in getAllDials()) {
-      if (dial.getLeftTimeInSeconds() < seconds && !dial.disabled) {
+      if (dial.getLeftTimeInSeconds() < seconds &&
+          (containDisabled || !dial.disabled)) {
         result = dial;
         seconds = dial.getLeftTimeInSeconds();
       }
@@ -83,11 +85,12 @@ class DialManager {
   }
 
   /// 오늘에 해당되는 다이얼 모두 리턴
-  List<Dial> getTodayDials() {
+  List<Dial> getTodayDials({bool containDisabled = true}) {
     var result = List<Dial>.empty(growable: true);
 
     for (Dial dial in getAllDials()) {
-      if (dial.hasSchedule(DateTime.now().weekday) && !dial.disabled) {
+      if (dial.hasSchedule(DateTime.now().weekday) &&
+          (containDisabled || !dial.disabled)) {
         result.add(dial);
       }
     }
@@ -100,7 +103,11 @@ class DialManager {
     var result = List<Appointment>.empty(growable: true);
 
     for (Dial dial in getAllDials()) {
-      result.addAll(dial.toAppointments(CupertinoColors.activeBlue));
+      if (dial.disabled) {
+        result.addAll(dial.toAppointments(CupertinoColors.inactiveGray));
+      } else {
+        result.addAll(dial.toAppointments(CupertinoColors.activeBlue));
+      }
     }
 
     return result;
