@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
-import 'package:plan_dial_renewal/models/schedule.dart';
-import 'package:plan_dial_renewal/models/time.dart';
 import 'package:plan_dial_renewal/models/week_schedule.dart';
 import 'package:plan_dial_renewal/utils/db_manager.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -30,24 +28,12 @@ class DialManager {
 
   Future<void> loadDialsFromDb() async {
     /* TEST CODE */
-    await DbManager().clear();
-    await NotiManager().removeAllNotifications();
-    await addDial(
-        "다이얼1",
-        DateTime.now(),
-        WeekSchedule(
-            monday: Schedule(Time(15, 30)), tuesday: Schedule(Time(20, 30))));
-    await addDial(
-        "다이얼2", DateTime.now(), WeekSchedule(friday: Schedule(Time(17, 30))));
-    await addDial(
-        "다이얼3", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(1, 30))),
-        disabled: true);
-    await addDial(
-        "다이얼4",
-        DateTime.now(),
-        WeekSchedule(
-            wednesday: Schedule(Time(21, 5)),
-            sunday: Schedule(Time(9, 30), Time(21, 30))));
+    // await DbManager().clear();
+    // await NotiManager().removeAllNotifications();
+    // await addDial("다이얼1", DateTime.now(), WeekSchedule(monday: Schedule(Time(15, 30)), tuesday: Schedule(Time(20, 30))));
+    // await addDial("다이얼2", DateTime.now(), WeekSchedule(friday: Schedule(Time(17, 30))));
+    // await addDial("다이얼3", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(1, 30))), disabled: true);
+    // await addDial("다이얼4", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(21, 5)), sunday: Schedule(Time(9, 30), Time(21, 30))));
 
     dials.addAll(await DbManager().loadAllDials());
     notifyObservers();
