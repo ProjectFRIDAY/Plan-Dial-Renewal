@@ -4,13 +4,27 @@ import 'package:flutter/material.dart';
 import 'Add_Dial.dart';
 
 // SelectDayPage
-class SelectDayPage extends StatelessWidget {
+class SelectDayPage extends StatefulWidget {
   const SelectDayPage({Key? key}) : super(key: key);
 
   @override
+  State<SelectDayPage> createState() => _SelectDayPageState();
+}
+
+class _SelectDayPageState extends State<SelectDayPage> {
+  @override
   Widget build(BuildContext context) {
-    return const CupertinoPageScaffold(
+    return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
+        leading: CupertinoButton(
+            padding: EdgeInsets.all(0),
+            child: Text('data'),
+            onPressed: () {
+              setState(() {
+                Navigator.pop(context,
+                    MaterialPageRoute(builder: (context) => AddDialPage()));
+              });
+            }),
         middle: Text(
           'Plan Dial',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -65,7 +79,13 @@ class SelectDayButton extends StatefulWidget {
 }
 
 class _SelectDayButtonState extends State<SelectDayButton> {
-  bool ischecked = false;
+  bool isChecked() {
+    if (1 == selectDayNumber[widget.dayCount]) {
+      return true;
+    } else
+      return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
@@ -82,7 +102,7 @@ class _SelectDayButtonState extends State<SelectDayButton> {
                 const Spacer(),
                 Icon(
                   CupertinoIcons.check_mark,
-                  color: ischecked
+                  color: isChecked()
                       ? CupertinoColors.activeBlue
                       : CupertinoColors.white,
                 )
@@ -96,10 +116,9 @@ class _SelectDayButtonState extends State<SelectDayButton> {
         ),
         onPressed: () {
           setState(() {
-            if (ischecked) {
-              ischecked = false;
+            if (isChecked()) {
+              selectDayNumber[widget.dayCount] = 0;
             } else {
-              ischecked = true;
               selectDayNumber[widget.dayCount] = 1;
             }
           });

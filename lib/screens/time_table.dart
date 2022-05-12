@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'add_dial.dart';
 import 'calendar.dart';
 import 'check_list.dart';
+import 'select_page.dart';
 
 // TimeTable slid sement control (하단에 Week & Today 버튼)
 class TimeTablePage extends StatefulWidget {
@@ -111,10 +112,12 @@ class WeekTop extends StatelessWidget {
                     CupertinoButton(
                         padding: const EdgeInsets.all(0.0),
                         minSize: 0,
-                        onPressed: () => Navigator.of(context).push(
-                            CupertinoPageRoute<void>(
-                                builder: (BuildContext context) =>
-                                    const AddDialPage())),
+                        onPressed: () {
+                          Navigator.of(context).push(CupertinoPageRoute<void>(
+                              builder: (BuildContext context) =>
+                                  const AddDialPage()));
+                          selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
+                        },
                         child: const Icon(CupertinoIcons.add, size: 25)),
                   ]),
               flex: 30),

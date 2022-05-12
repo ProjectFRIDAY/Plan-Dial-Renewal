@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -65,6 +63,8 @@ class AddDialTop extends StatelessWidget {
   }
 }
 
+String tempDialName = '';
+
 class AddDialName extends StatefulWidget {
   const AddDialName({Key? key}) : super(key: key);
 
@@ -72,9 +72,8 @@ class AddDialName extends StatefulWidget {
   State<AddDialName> createState() => _AddDialNameState();
 }
 
-final dialNameController = TextEditingController();
-
 class _AddDialNameState extends State<AddDialName> {
+  final dialNameController = TextEditingController();
   @override
   void dispose() {
     dialNameController.dispose();
@@ -91,7 +90,7 @@ class _AddDialNameState extends State<AddDialName> {
             child: CupertinoTextField(
               controller: dialNameController,
               decoration: BoxDecoration(
-                  color: CupertinoColors.extraLightBackgroundGray,
+                  color: Color.fromARGB(255, 248, 248, 248),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(width: 1.5, color: CupertinoColors.black)),
               placeholder: "Ex) 독서하기",
@@ -99,7 +98,7 @@ class _AddDialNameState extends State<AddDialName> {
               padding: EdgeInsets.all(10),
               style: TextStyle(fontSize: 16),
               onChanged: (text) {
-                print(text);
+                tempDialName = text;
               },
             ),
           ),
@@ -124,10 +123,18 @@ class AddDialDay extends StatefulWidget {
 }
 
 class _AddDialDayState extends State<AddDialDay> {
+  List<String> showDay = ['월', '화', '수', '목', '금', '토', '일'];
+  bool isSelectDay() {
+    setState(() {});
+    if (selectDayNumber.contains(1))
+      return true;
+    else
+      return false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: CupertinoButton(
+    return CupertinoButton(
       child: Row(
         children: [
           Expanded(
@@ -137,8 +144,10 @@ class _AddDialDayState extends State<AddDialDay> {
                   color: CupertinoColors.black,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(width: 1.5, color: CupertinoColors.black)),
-              placeholder: "Ex) 월 / 화 / 수",
-              placeholderStyle: TextStyle(color: CupertinoColors.inactiveGray),
+              placeholder: isSelectDay() ? "선택됨" : "Ex) 월 / 화 / 수",
+              placeholderStyle: isSelectDay()
+                  ? TextStyle(color: CupertinoColors.systemPink)
+                  : TextStyle(color: CupertinoColors.inactiveGray),
               padding: EdgeInsets.all(10),
               style: TextStyle(fontSize: 16),
             ),
@@ -156,7 +165,7 @@ class _AddDialDayState extends State<AddDialDay> {
         Navigator.of(context).push(CupertinoPageRoute<void>(
             builder: (BuildContext context) => const SelectDayPage()));
       },
-    ));
+    );
   }
 }
 
@@ -242,8 +251,8 @@ class _AddButtonState extends State<AddButton> {
                   );
                 });
           } else {
-            print(dialNameController.text);
             print(selectDayNumber);
+            print(tempDialName);
           }
         });
   }
