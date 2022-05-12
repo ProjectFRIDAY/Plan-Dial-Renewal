@@ -225,7 +225,7 @@ class _AddDialTimeState extends State<AddDialTime> {
                 placeholderStyle:
                     selectDateTime[0].hour != selectDateTime[1].hour ||
                             selectDateTime[0].minute != selectDateTime[1].minute
-                        ? TextStyle(color: CupertinoColors.systemPink)
+                        ? TextStyle(color: CupertinoColors.systemRed)
                         : TextStyle(color: CupertinoColors.inactiveGray),
                 padding: EdgeInsets.all(10),
                 style: TextStyle(fontSize: 16),
