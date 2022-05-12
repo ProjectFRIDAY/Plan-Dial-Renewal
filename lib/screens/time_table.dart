@@ -117,6 +117,7 @@ class WeekTop extends StatelessWidget {
                               builder: (BuildContext context) =>
                                   const AddDialPage()));
                           selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
+                          selectDateTime = [DateTime.now(), DateTime.now()];
                         },
                         child: const Icon(CupertinoIcons.add, size: 25)),
                   ]),

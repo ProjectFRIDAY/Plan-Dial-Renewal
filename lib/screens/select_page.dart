@@ -1,30 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'Add_Dial.dart';
-
 // SelectDayPage
-class SelectDayPage extends StatefulWidget {
+class SelectDayPage extends StatelessWidget {
   const SelectDayPage({Key? key}) : super(key: key);
 
   @override
-  State<SelectDayPage> createState() => _SelectDayPageState();
-}
-
-class _SelectDayPageState extends State<SelectDayPage> {
-  @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return const CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        leading: CupertinoButton(
-            padding: EdgeInsets.all(0),
-            child: Text('data'),
-            onPressed: () {
-              setState(() {
-                Navigator.pop(context,
-                    MaterialPageRoute(builder: (context) => AddDialPage()));
-              });
-            }),
         middle: Text(
           'Plan Dial',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -154,6 +138,8 @@ class SelectTimePicker extends StatefulWidget {
   State<SelectTimePicker> createState() => _SelectTimePickerState();
 }
 
+List<DateTime> selectDateTime = [DateTime.now(), DateTime.now()];
+
 class _SelectTimePickerState extends State<SelectTimePicker> {
   final Map<int, Widget> children = const <int, Widget>{
     0: Text('시작시간'),
@@ -161,9 +147,6 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
   };
 
   int? currentValue = 0;
-  DateTime _startTime = DateTime.now();
-  DateTime _stopTime = DateTime.now();
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -175,7 +158,7 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
               child: CupertinoDatePicker(
                 mode: CupertinoDatePickerMode.time,
                 onDateTimeChanged: (value) {
-                  _startTime = value;
+                  selectDateTime[0] = value;
                 },
                 initialDateTime: DateTime.now(),
               ),
@@ -185,7 +168,7 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
               child: CupertinoDatePicker(
                 mode: CupertinoDatePickerMode.time,
                 onDateTimeChanged: (value) {
-                  _stopTime = value;
+                  selectDateTime[1] = value;
                 },
                 initialDateTime: DateTime.now(),
               ),
@@ -200,32 +183,11 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
             },
             groupValue: currentValue,
           ),
-          Text(_startTime.toString()),
-          Text(_stopTime.toString()),
           const SizedBox(
-            height: 30,
+            height: 50,
           ),
         ],
       ),
     );
   }
-}
-
-// SelectTimePage Route
-Route createRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => SelectTimePicker(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(0.0, 1.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
 }

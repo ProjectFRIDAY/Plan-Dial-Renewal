@@ -88,6 +88,7 @@ class _AddDialNameState extends State<AddDialName> {
         children: [
           Expanded(
             child: CupertinoTextField(
+              autocorrect: false,
               controller: dialNameController,
               decoration: BoxDecoration(
                   color: Color.fromARGB(255, 248, 248, 248),
@@ -124,6 +125,18 @@ class AddDialDay extends StatefulWidget {
 
 class _AddDialDayState extends State<AddDialDay> {
   List<String> showDay = ['월', '화', '수', '목', '금', '토', '일'];
+
+  String dayNames() {
+    String result = '';
+    for (var i = 0; i <= 6; i++) {
+      if (selectDayNumber[i] == 1) {
+        result += showDay[i];
+        result += ' / ';
+      }
+    }
+    return result.substring(0, result.length - 3);
+  }
+
   bool isSelectDay() {
     setState(() {});
     if (selectDayNumber.contains(1))
@@ -144,9 +157,9 @@ class _AddDialDayState extends State<AddDialDay> {
                   color: CupertinoColors.black,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(width: 1.5, color: CupertinoColors.black)),
-              placeholder: isSelectDay() ? "선택됨" : "Ex) 월 / 화 / 수",
+              placeholder: isSelectDay() ? dayNames() : "Ex) 월 / 화 / 수",
               placeholderStyle: isSelectDay()
-                  ? TextStyle(color: CupertinoColors.systemPink)
+                  ? TextStyle(color: CupertinoColors.systemRed)
                   : TextStyle(color: CupertinoColors.inactiveGray),
               padding: EdgeInsets.all(10),
               style: TextStyle(fontSize: 16),
@@ -162,8 +175,12 @@ class _AddDialDayState extends State<AddDialDay> {
         ],
       ),
       onPressed: () {
-        Navigator.of(context).push(CupertinoPageRoute<void>(
-            builder: (BuildContext context) => const SelectDayPage()));
+        Navigator.of(context)
+            .push(CupertinoPageRoute<void>(
+                builder: (BuildContext context) => const SelectDayPage()))
+            .then((value) {
+          setState(() {});
+        });
       },
     );
   }
@@ -177,6 +194,17 @@ class AddDialTime extends StatefulWidget {
 }
 
 class _AddDialTimeState extends State<AddDialTime> {
+  String makeTime() {
+    String result = '';
+    for (var i = 0; i < 2; i++) {
+      result += selectDateTime[i].hour.toString() +
+          ':' +
+          selectDateTime[i].minute.toString() +
+          ' ~ ';
+    }
+    return result.substring(0, result.length - 3);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
@@ -190,9 +218,15 @@ class _AddDialTimeState extends State<AddDialTime> {
                     borderRadius: BorderRadius.circular(12),
                     border:
                         Border.all(width: 1.5, color: CupertinoColors.black)),
-                placeholder: "Ex) 6:00 AM ~ 8:30 PM",
+                placeholder: selectDateTime[0].hour != selectDateTime[1].hour ||
+                        selectDateTime[0].minute != selectDateTime[1].minute
+                    ? makeTime()
+                    : "Ex) 6:00 AM ~ 8:30 PM",
                 placeholderStyle:
-                    TextStyle(color: CupertinoColors.inactiveGray),
+                    selectDateTime[0].hour != selectDateTime[1].hour ||
+                            selectDateTime[0].minute != selectDateTime[1].minute
+                        ? TextStyle(color: CupertinoColors.systemPink)
+                        : TextStyle(color: CupertinoColors.inactiveGray),
                 padding: EdgeInsets.all(10),
                 style: TextStyle(fontSize: 16),
               ),
@@ -200,7 +234,7 @@ class _AddDialTimeState extends State<AddDialTime> {
             const SizedBox(
               width: 16,
             ),
-            const Text('에 할게요',
+            const Text('동안 할게요',
                 style: TextStyle(
                     fontSize: 17,
                     color: CupertinoColors.activeBlue,
@@ -208,8 +242,12 @@ class _AddDialTimeState extends State<AddDialTime> {
           ],
         ),
         onPressed: () {
-          Navigator.of(context).push(CupertinoPageRoute<void>(
-              builder: (BuildContext context) => const SelectTimePage()));
+          Navigator.of(context)
+              .push(CupertinoPageRoute<void>(
+                  builder: (BuildContext context) => const SelectTimePage()))
+              .then((value) {
+            setState(() {});
+          });
         });
   }
 }
@@ -253,6 +291,7 @@ class _AddButtonState extends State<AddButton> {
           } else {
             print(selectDayNumber);
             print(tempDialName);
+            print(selectDateTime);
           }
         });
   }
