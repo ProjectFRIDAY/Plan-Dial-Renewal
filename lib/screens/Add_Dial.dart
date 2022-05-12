@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +28,7 @@ class AddDialPage extends StatelessWidget {
         AddDialDay(),
         AddDialTime(),
         Spacer(),
+        AddButton(),
         SizedBox(
           height: 80,
         )
@@ -62,8 +65,21 @@ class AddDialTop extends StatelessWidget {
   }
 }
 
-class AddDialName extends StatelessWidget {
+class AddDialName extends StatefulWidget {
   const AddDialName({Key? key}) : super(key: key);
+
+  @override
+  State<AddDialName> createState() => _AddDialNameState();
+}
+
+final dialNameController = TextEditingController();
+
+class _AddDialNameState extends State<AddDialName> {
+  @override
+  void dispose() {
+    dialNameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +89,7 @@ class AddDialName extends StatelessWidget {
         children: [
           Expanded(
             child: CupertinoTextField(
+              controller: dialNameController,
               decoration: BoxDecoration(
                   color: CupertinoColors.extraLightBackgroundGray,
                   borderRadius: BorderRadius.circular(12),
@@ -81,6 +98,9 @@ class AddDialName extends StatelessWidget {
               placeholderStyle: TextStyle(color: CupertinoColors.inactiveGray),
               padding: EdgeInsets.all(10),
               style: TextStyle(fontSize: 16),
+              onChanged: (text) {
+                print(text);
+              },
             ),
           ),
           const SizedBox(
@@ -204,7 +224,7 @@ class _AddButtonState extends State<AddButton> {
         ),
         color: CupertinoColors.activeBlue,
         onPressed: () {
-          if (!isFinish) {
+          if (isFinish) {
             showCupertinoDialog(
                 context: context,
                 builder: (context) {
@@ -221,6 +241,9 @@ class _AddButtonState extends State<AddButton> {
                     ],
                   );
                 });
+          } else {
+            print(dialNameController.text);
+            print(selectDayNumber);
           }
         });
   }

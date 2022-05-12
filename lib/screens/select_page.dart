@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'Add_Dial.dart';
+
 // SelectDayPage
 class SelectDayPage extends StatelessWidget {
   const SelectDayPage({Key? key}) : super(key: key);
@@ -30,7 +32,7 @@ class SelectDayList extends StatefulWidget {
 }
 
 class _SelectDayListState extends State<SelectDayList> {
-  List<String> dayNameList = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+  List<String> dayNameList = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -42,7 +44,7 @@ class _SelectDayListState extends State<SelectDayList> {
           shrinkWrap: true,
           padding: const EdgeInsets.all(8),
           children: [
-            for (var i = 0; i < 7; i++) SelectDayButton(dayNameList[i])
+            for (var i = 0; i < 7; i++) SelectDayButton(dayNameList[i], i)
           ],
         ),
       ],
@@ -50,10 +52,13 @@ class _SelectDayListState extends State<SelectDayList> {
   }
 }
 
+List<int> selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
+
 // Day select Button
 class SelectDayButton extends StatefulWidget {
   final String dayName;
-  SelectDayButton(this.dayName) : super();
+  final int dayCount;
+  SelectDayButton(this.dayName, this.dayCount) : super();
 
   @override
   State<SelectDayButton> createState() => _SelectDayButtonState();
@@ -61,7 +66,6 @@ class SelectDayButton extends StatefulWidget {
 
 class _SelectDayButtonState extends State<SelectDayButton> {
   bool ischecked = false;
-
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
@@ -96,6 +100,7 @@ class _SelectDayButtonState extends State<SelectDayButton> {
               ischecked = false;
             } else {
               ischecked = true;
+              selectDayNumber[widget.dayCount] = 1;
             }
           });
         });
