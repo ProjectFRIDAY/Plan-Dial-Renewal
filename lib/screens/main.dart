@@ -43,13 +43,13 @@ class BottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     List<BottomNavigationBarItem> items = [
       const BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.star_fill), label: 'Dial'),
+          icon: Icon(CupertinoIcons.clock), label: 'Dial'),
       const BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.star_fill), label: 'Time Table'),
+          icon: Icon(CupertinoIcons.table), label: 'Table'),
     ];
 
     return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(items: items),
+      tabBar: CupertinoTabBar(items: items, height: 55),
       tabBuilder: (context, index) {
         switch (index) {
           case 0:
