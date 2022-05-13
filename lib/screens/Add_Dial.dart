@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../models/dial_manager.dart';
+import '../models/time.dart';
+import '../models/week_schedule.dart';
 import 'select_page.dart';
 
 /// 확인버튼 클릭시 정보를 다 입력했는지 확인하는 변수
@@ -77,6 +80,7 @@ class AddDialName extends StatefulWidget {
 
 class _AddDialNameState extends State<AddDialName> {
   final dialNameController = TextEditingController();
+
   @override
   void dispose() {
     dialNameController.dispose();
@@ -294,10 +298,15 @@ class _AddButtonState extends State<AddButton> {
                   );
                 });
           } else {
-            /// 여기서 백엔드로 데이터 전송해야함.
-            print(selectDayNumber);
-            print(tempDialName);
-            print(selectDateTime);
+            DialManager().addDial(
+                tempDialName,
+                DateTime.now(),
+                WeekSchedule.byUserInput(
+                    selectDayNumber: selectDayNumber,
+                    start:
+                        Time(selectDateTime[0].hour, selectDateTime[0].minute),
+                    finish: Time(
+                        selectDateTime[1].hour, selectDateTime[1].minute)));
           }
         });
   }
