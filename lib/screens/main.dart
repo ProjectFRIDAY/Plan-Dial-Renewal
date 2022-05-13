@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                   ? Dial.secondsToString(urgentDial.getLeftTimeInSeconds())
                   : "다이얼이 없음",
               icon: const Icon(
-                CupertinoIcons.alarm_fill,
+                CupertinoIcons.clock,
                 color: CupertinoColors.systemRed,
                 size: 50,
               ),
@@ -136,7 +136,7 @@ class ListViewWidget extends StatefulWidget {
 
   ListViewWidget(Color color, {Key? key}) : super(key: key) {
     icon = Icon(
-      CupertinoIcons.alarm_fill,
+      CupertinoIcons.clock,
       color: color,
       size: 35,
     );
@@ -185,7 +185,12 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
             // The child of the Slidable is what the user sees when the
             // component is not dragged.
             child: ListTile(
-                title: Text('여기에 대체 어떻게 UI를 넣는 거야!!!'),
+                tileColor: CupertinoColors.white,
+                leading: Icon(CupertinoIcons.clock,
+                    color: CupertinoColors.activeBlue, size: 40),
+                title: Text('토요일까지 마감이다!!!',
+                    style: TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text('• 남는 시간'),
                 trailing: Icon(CupertinoIcons.right_chevron)),
           ),
         ),
