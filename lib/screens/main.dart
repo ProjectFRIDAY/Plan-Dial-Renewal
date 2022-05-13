@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+
 import '../utils/noti_manager.dart';
 
 void main() {
@@ -127,7 +128,7 @@ class Item {
 }
 
 class ListViewWidget extends StatefulWidget {
-  ListViewWidget({Key? key}) : super(key: key);
+  const ListViewWidget({Key? key}) : super(key: key);
 
   @override
   _ListViewState createState() => _ListViewState();
@@ -141,7 +142,14 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
         (a, b) => a.getLeftTimeInSeconds().compareTo(b.getLeftTimeInSeconds()));
     if (dials.isNotEmpty) dials.removeAt(0);
 
-    return ListView(children: [SlideIndexWidget(), SlideIndexWidget()]);
+    return ListView(
+      children: List.generate(
+        dials.length,
+        (i) {
+          return SlideIndexWidget(dials[i]);
+        },
+      ),
+    );
   }
 
   @override
@@ -151,14 +159,19 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
 }
 
 class SlideIndexWidget extends StatefulWidget {
-  SlideIndexWidget({Key? key}) : super(key: key);
-  bool isdisable = false;
+  final Dial dial;
+
+  const SlideIndexWidget(this.dial, {Key? key}) : super(key: key);
 
   @override
-  State<SlideIndexWidget> createState() => _SlideIndexWidgetState();
+  State<SlideIndexWidget> createState() => _SlideIndexWidgetState(dial);
 }
 
 class _SlideIndexWidgetState extends State<SlideIndexWidget> {
+  final Dial dial;
+
+  _SlideIndexWidgetState(this.dial);
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -170,23 +183,31 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
         endActionPane: ActionPane(
           motion: DrawerMotion(),
           children: [
-            widget.isdisable
-                ? const SlidableAction(
-                    onPressed: null,
+            !dial.disabled
+                ? SlidableAction(
+                    onPressed: (context) {
+                      dial.disabled = true;
+                      DialManager().updateDial(dial);
+                    },
                     foregroundColor: Colors.white,
                     backgroundColor: CupertinoColors.inactiveGray,
                     icon: Icons.play_disabled,
                     label: 'Disable',
                   )
-                : const SlidableAction(
-                    onPressed: null,
+                : SlidableAction(
+                    onPressed: (context) {
+                      dial.disabled = false;
+                      DialManager().updateDial(dial);
+                    },
                     foregroundColor: Colors.white,
                     backgroundColor: Color.fromARGB(255, 49, 149, 255),
                     icon: Icons.play_arrow,
                     label: 'Able',
                   ),
-            const SlidableAction(
-              onPressed: null,
+            SlidableAction(
+              onPressed: (context) {
+                DialManager().removeDialById(dial.id);
+              },
               backgroundColor: CupertinoColors.systemRed,
               foregroundColor: Colors.white,
               icon: Icons.delete,
@@ -196,13 +217,13 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
         ),
         // The child of the Slidable is what the user sees when the
         // component is not dragged.
-        child: const ListTile(
+        child: ListTile(
             tileColor: CupertinoColors.white,
             leading: Icon(CupertinoIcons.calendar_circle_fill,
                 color: CupertinoColors.activeBlue, size: 40),
-            title: Text('토요일까지 마감이다!!!',
-                style: TextStyle(fontWeight: FontWeight.w600)),
-            subtitle: Text('• 남는 시간'),
+            title:
+                Text(dial.name, style: TextStyle(fontWeight: FontWeight.w600)),
+            subtitle: Text(Dial.secondsToString(dial.getLeftTimeInSeconds())),
             trailing: Icon(CupertinoIcons.right_chevron)),
       ),
     );
