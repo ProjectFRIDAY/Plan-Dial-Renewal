@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                   ? Dial.secondsToString(urgentDial.getLeftTimeInSeconds())
                   : "다이얼이 없음",
               icon: const Icon(
-                CupertinoIcons.clock,
+                CupertinoIcons.circle_fill,
                 color: CupertinoColors.systemRed,
                 size: 50,
               ),
@@ -129,14 +129,11 @@ class Item {
 class ListViewWidget extends StatefulWidget {
   late final Icon icon;
 
-  final List<Item> items = List.generate(
-    10,
-    (i) => Item(i, 'Item $i', 'Description $i', Colors.blue),
-  );
+  bool isdisable = false;
 
   ListViewWidget(Color color, {Key? key}) : super(key: key) {
     icon = Icon(
-      CupertinoIcons.clock,
+      CupertinoIcons.circle_fill,
       color: color,
       size: 35,
     );
@@ -155,7 +152,7 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
     if (dials.isNotEmpty) dials.removeAt(0);
 
     return ListView(
-      children: const [
+      children: [
         Material(
           child: Slidable(
             // Specify a key if the Slidable is dismissible.
@@ -165,14 +162,22 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
             endActionPane: ActionPane(
               motion: DrawerMotion(),
               children: [
-                SlidableAction(
-                  onPressed: null,
-                  backgroundColor: CupertinoColors.inactiveGray,
-                  foregroundColor: Colors.white,
-                  icon: Icons.play_disabled,
-                  label: 'Disable',
-                ),
-                SlidableAction(
+                widget.isdisable
+                    ? const SlidableAction(
+                        onPressed: null,
+                        foregroundColor: Colors.white,
+                        backgroundColor: CupertinoColors.inactiveGray,
+                        icon: Icons.play_disabled,
+                        label: 'Disable',
+                      )
+                    : const SlidableAction(
+                        onPressed: null,
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color.fromARGB(255, 49, 149, 255),
+                        icon: Icons.play_arrow,
+                        label: 'Able',
+                      ),
+                const SlidableAction(
                   onPressed: null,
                   backgroundColor: CupertinoColors.systemRed,
                   foregroundColor: Colors.white,
@@ -181,12 +186,11 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
                 ),
               ],
             ),
-
             // The child of the Slidable is what the user sees when the
             // component is not dragged.
-            child: ListTile(
+            child: const ListTile(
                 tileColor: CupertinoColors.white,
-                leading: Icon(CupertinoIcons.clock,
+                leading: Icon(CupertinoIcons.calendar_circle_fill,
                     color: CupertinoColors.activeBlue, size: 40),
                 title: Text('토요일까지 마감이다!!!',
                     style: TextStyle(fontWeight: FontWeight.w600)),
