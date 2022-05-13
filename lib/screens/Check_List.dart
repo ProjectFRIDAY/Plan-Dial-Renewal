@@ -21,9 +21,15 @@ class _CheckListState extends State<CheckList> implements Observer {
     return ListView(
       shrinkWrap: true,
       padding: const EdgeInsets.all(8),
-      children: List.generate(todayDials.length, (i) {
-        return CheckBox(todayDials[i].name);
-      }),
+      children: List.generate(
+        todayDials.length,
+        (i) {
+          return Container(
+            child: CheckBox(todayDials[i].name),
+            margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+          );
+        },
+      ),
     );
   }
 
