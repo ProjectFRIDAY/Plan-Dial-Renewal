@@ -153,7 +153,7 @@ class ListIndexWidget extends StatelessWidget {
     return Container(
       child: Text(
         title,
-        style: const TextStyle(fontSize: 20),
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
       decoration: const BoxDecoration(
         color: CupertinoColors.extraLightBackgroundGray,
