@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
-
+import 'package:flutter/material.dart';
 import '../utils/noti_manager.dart';
 
+const double danceparty = 3600 * 24 * 7;
 void main() {
   runApp(const MyApp());
 }
@@ -90,10 +91,11 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
               subtitle: urgentDial != null
                   ? Dial.secondsToString(urgentDial.getLeftTimeInSeconds())
                   : "다이얼이 없음",
-              icon: const Icon(
-                CupertinoIcons.alarm_fill,
-                color: CupertinoColors.systemRed,
-                size: 50,
+              icon: CircularProgressIndicator(
+                backgroundColor: Colors.redAccent,
+                valueColor: AlwaysStoppedAnimation(Colors.green),
+                strokeWidth: 10,
+                value: urgentDial!.getLeftTimeInSeconds() / danceparty,
               ),
             ),
             const ListIndexWidget("Dial"),
@@ -167,7 +169,7 @@ class ListIndexWidget extends StatelessWidget {
 class MainTile extends StatelessWidget {
   final String title;
   final String subtitle;
-  final Icon icon;
+  final CircularProgressIndicator icon;
 
   const MainTile(
       {Key? key,
