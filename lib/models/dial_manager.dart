@@ -47,10 +47,16 @@ class DialManager {
     return dials[id];
   }
 
-  void removeDialById(int id) {
+  Future<void> removeDialById(int id) async {
     dials.remove(id);
-    DbManager().deleteDialByIndex(id);
+    await DbManager().deleteDialByIndex(id);
     NotiManager().removeNotification(id);
+    notifyObservers();
+  }
+
+  Future<void> removeAllDials() async {
+    await DbManager().clear();
+    NotiManager().removeAllNotifications();
     notifyObservers();
   }
 

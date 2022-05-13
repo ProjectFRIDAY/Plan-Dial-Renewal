@@ -10,7 +10,11 @@ class Calendar extends StatefulWidget {
   State<Calendar> createState() => _CalendarState();
 }
 
-class _CalendarState extends State<Calendar> {
+class _CalendarState extends State<Calendar> implements Observer {
+  _CalendarState() {
+    DialManager().addObserver(this);
+  }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -30,6 +34,11 @@ class _CalendarState extends State<Calendar> {
           .subtract(const Duration(seconds: 1)),
       minDate: baseDate,
     );
+  }
+
+  @override
+  void onChanged() {
+    setState(() {});
   }
 }
 

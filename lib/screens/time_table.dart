@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../models/dial_manager.dart';
 import 'add_dial.dart';
 import 'calendar.dart';
 import 'check_list.dart';
@@ -100,6 +101,7 @@ class _WeekTopState extends State<WeekTop> {
                                           child: const Text("확인"),
                                           onPressed: () {
                                             Navigator.pop(context);
+                                            DialManager().removeAllDials();
                                           }),
                                       CupertinoDialogAction(
                                           isDefaultAction: true,
