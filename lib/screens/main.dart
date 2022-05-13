@@ -206,7 +206,29 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                   ),
             SlidableAction(
               onPressed: (context) {
-                DialManager().removeDialById(dial.id);
+                showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text('\"' + dial.name + '\" 일정 삭제'),
+                        content: Text('\'확인\'을 누르시면 일정이 삭제됩니다.'),
+                        actions: [
+                          CupertinoDialogAction(
+                              isDefaultAction: true,
+                              child: const Text("확인"),
+                              onPressed: () {
+                                DialManager().removeDialById(dial.id);
+                                Navigator.pop(context);
+                              }),
+                          CupertinoDialogAction(
+                              isDefaultAction: true,
+                              child: const Text("취소"),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              }),
+                        ],
+                      );
+                    });
               },
               backgroundColor: CupertinoColors.systemRed,
               foregroundColor: Colors.white,
@@ -220,7 +242,10 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
         child: ListTile(
             tileColor: CupertinoColors.white,
             leading: Icon(CupertinoIcons.calendar_circle_fill,
-                color: CupertinoColors.activeBlue, size: 40),
+                color: dial.disabled
+                    ? CupertinoColors.inactiveGray
+                    : CupertinoColors.activeBlue,
+                size: 40),
             title:
                 Text(dial.name, style: TextStyle(fontWeight: FontWeight.w600)),
             subtitle: Text(Dial.secondsToString(dial.getLeftTimeInSeconds())),
