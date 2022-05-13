@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
               ),
             ),
             const ListIndexWidget("Dial"),
-            Expanded(child: ListViewWidget(CupertinoColors.systemBlue))
+            Expanded(child: ListViewWidget())
           ],
           crossAxisAlignment: CrossAxisAlignment.stretch,
         ),
@@ -127,17 +127,7 @@ class Item {
 }
 
 class ListViewWidget extends StatefulWidget {
-  late final Icon icon;
-
-  bool isdisable = false;
-
-  ListViewWidget(Color color, {Key? key}) : super(key: key) {
-    icon = Icon(
-      CupertinoIcons.circle_fill,
-      color: color,
-      size: 35,
-    );
-  }
+  ListViewWidget({Key? key}) : super(key: key);
 
   @override
   _ListViewState createState() => _ListViewState();
@@ -151,66 +141,71 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
         (a, b) => a.getLeftTimeInSeconds().compareTo(b.getLeftTimeInSeconds()));
     if (dials.isNotEmpty) dials.removeAt(0);
 
-    return ListView(
-      children: [
-        Material(
-          child: Slidable(
-            // Specify a key if the Slidable is dismissible.
-            key: ValueKey(0),
-
-            // The end action pane is the one at the right or the bottom side.
-            endActionPane: ActionPane(
-              motion: DrawerMotion(),
-              children: [
-                widget.isdisable
-                    ? const SlidableAction(
-                        onPressed: null,
-                        foregroundColor: Colors.white,
-                        backgroundColor: CupertinoColors.inactiveGray,
-                        icon: Icons.play_disabled,
-                        label: 'Disable',
-                      )
-                    : const SlidableAction(
-                        onPressed: null,
-                        foregroundColor: Colors.white,
-                        backgroundColor: Color.fromARGB(255, 49, 149, 255),
-                        icon: Icons.play_arrow,
-                        label: 'Able',
-                      ),
-                const SlidableAction(
-                  onPressed: null,
-                  backgroundColor: CupertinoColors.systemRed,
-                  foregroundColor: Colors.white,
-                  icon: Icons.delete,
-                  label: 'Delete',
-                ),
-              ],
-            ),
-            // The child of the Slidable is what the user sees when the
-            // component is not dragged.
-            child: const ListTile(
-                tileColor: CupertinoColors.white,
-                leading: Icon(CupertinoIcons.calendar_circle_fill,
-                    color: CupertinoColors.activeBlue, size: 40),
-                title: Text('토요일까지 마감이다!!!',
-                    style: TextStyle(fontWeight: FontWeight.w600)),
-                subtitle: Text('• 남는 시간'),
-                trailing: Icon(CupertinoIcons.right_chevron)),
-          ),
-        ),
-      ],
-    );
-
-    // ListView(
-    //   children: List.generate(dials.length, (i) {
-    //     return dials[i].toListTile(widget.icon);
-    //   }),
-    // );
+    return ListView(children: [SlideIndexWidget(), SlideIndexWidget()]);
   }
 
   @override
   void onChanged() {
     setState(() {});
+  }
+}
+
+class SlideIndexWidget extends StatefulWidget {
+  SlideIndexWidget({Key? key}) : super(key: key);
+  bool isdisable = false;
+
+  @override
+  State<SlideIndexWidget> createState() => _SlideIndexWidgetState();
+}
+
+class _SlideIndexWidgetState extends State<SlideIndexWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Slidable(
+        // Specify a key if the Slidable is dismissible.
+        key: ValueKey(0),
+
+        // The end action pane is the one at the right or the bottom side.
+        endActionPane: ActionPane(
+          motion: DrawerMotion(),
+          children: [
+            widget.isdisable
+                ? const SlidableAction(
+                    onPressed: null,
+                    foregroundColor: Colors.white,
+                    backgroundColor: CupertinoColors.inactiveGray,
+                    icon: Icons.play_disabled,
+                    label: 'Disable',
+                  )
+                : const SlidableAction(
+                    onPressed: null,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromARGB(255, 49, 149, 255),
+                    icon: Icons.play_arrow,
+                    label: 'Able',
+                  ),
+            const SlidableAction(
+              onPressed: null,
+              backgroundColor: CupertinoColors.systemRed,
+              foregroundColor: Colors.white,
+              icon: Icons.delete,
+              label: 'Delete',
+            ),
+          ],
+        ),
+        // The child of the Slidable is what the user sees when the
+        // component is not dragged.
+        child: const ListTile(
+            tileColor: CupertinoColors.white,
+            leading: Icon(CupertinoIcons.calendar_circle_fill,
+                color: CupertinoColors.activeBlue, size: 40),
+            title: Text('토요일까지 마감이다!!!',
+                style: TextStyle(fontWeight: FontWeight.w600)),
+            subtitle: Text('• 남는 시간'),
+            trailing: Icon(CupertinoIcons.right_chevron)),
+      ),
+    );
   }
 }
 
