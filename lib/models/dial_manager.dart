@@ -6,6 +6,8 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import '../utils/colors.dart';
 import '../utils/noti_manager.dart';
+import 'schedule.dart';
+import 'time.dart';
 
 class DialManager {
   static const dayChangeHour = 4;
@@ -30,8 +32,13 @@ class DialManager {
     /* TEST CODE */
     // await DbManager().clear();
     // await NotiManager().removeAllNotifications();
-    // await addDial("다이얼1", DateTime.now(), WeekSchedule(monday: Schedule(Time(15, 30)), tuesday: Schedule(Time(20, 30))));
-    // await addDial("다이얼2", DateTime.now(), WeekSchedule(friday: Schedule(Time(17, 30))));
+    // await addDial(
+    //     "다이얼1",
+    //     DateTime.now(),
+    //     WeekSchedule(
+    //         monday: Schedule(Time(15, 30)), tuesday: Schedule(Time(20, 30))));
+    // await addDial(
+    //     "다이얼2", DateTime.now(), WeekSchedule(friday: Schedule(Time(17, 30))));
     // await addDial("다이얼3", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(1, 30))), disabled: true);
     // await addDial("다이얼4", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(21, 5)), sunday: Schedule(Time(9, 30), Time(21, 30))));
 

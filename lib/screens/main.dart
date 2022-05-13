@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
-
+import 'package:flutter_slidable/flutter_slidable.dart';
 import '../utils/noti_manager.dart';
 
 void main() {
@@ -111,8 +112,27 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
   }
 }
 
+class Item {
+  const Item(
+    this.index,
+    this.title,
+    this.subtitle,
+    this.color,
+  );
+
+  final int index;
+  final String title;
+  final String subtitle;
+  final Color color;
+}
+
 class ListViewWidget extends StatefulWidget {
   late final Icon icon;
+
+  final List<Item> items = List.generate(
+    10,
+    (i) => Item(i, 'Item $i', 'Description $i', Colors.blue),
+  );
 
   ListViewWidget(Color color, {Key? key}) : super(key: key) {
     icon = Icon(
@@ -135,10 +155,48 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
     if (dials.isNotEmpty) dials.removeAt(0);
 
     return ListView(
-      children: List.generate(dials.length, (i) {
-        return dials[i].toListTile(widget.icon);
-      }),
+      children: const [
+        Material(
+          child: Slidable(
+            // Specify a key if the Slidable is dismissible.
+            key: ValueKey(0),
+
+            // The end action pane is the one at the right or the bottom side.
+            endActionPane: ActionPane(
+              motion: DrawerMotion(),
+              children: [
+                SlidableAction(
+                  onPressed: null,
+                  backgroundColor: CupertinoColors.inactiveGray,
+                  foregroundColor: Colors.white,
+                  icon: Icons.play_disabled,
+                  label: 'Disable',
+                ),
+                SlidableAction(
+                  onPressed: null,
+                  backgroundColor: CupertinoColors.systemRed,
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete,
+                  label: 'Delete',
+                ),
+              ],
+            ),
+
+            // The child of the Slidable is what the user sees when the
+            // component is not dragged.
+            child: ListTile(
+                title: Text('여기에 대체 어떻게 UI를 넣는 거야!!!'),
+                trailing: Icon(CupertinoIcons.right_chevron)),
+          ),
+        ),
+      ],
     );
+
+    // ListView(
+    //   children: List.generate(dials.length, (i) {
+    //     return dials[i].toListTile(widget.icon);
+    //   }),
+    // );
   }
 
   @override
