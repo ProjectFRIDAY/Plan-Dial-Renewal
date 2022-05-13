@@ -20,10 +20,15 @@ class Schedule {
 
   Appointment toAppointment(String title, Color color, DateTime date) {
     return Appointment(
-      startTime: start.toDateTime(date.year, date.month, date.day),
-      endTime: finish.toDateTime(date.year, date.month, date.day),
+      startTime: start
+          .toDateTime(date.year, date.month, date.day)
+          .subtract(const Duration(days: 7)),
+      endTime: finish
+          .toDateTime(date.year, date.month, date.day)
+          .subtract(const Duration(days: 7)),
       subject: title,
       color: color,
+      recurrenceRule: "FREQ=DAILY;INTERVAL=7;COUNT=2",
     );
   }
 

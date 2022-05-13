@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -53,7 +55,7 @@ class AddDialTop extends StatelessWidget {
             const Flexible(
                 child: Text("일정추가",
                     style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
                 flex: 30),
             Flexible(child: Container(), flex: 2),
           ],
@@ -185,7 +187,7 @@ class _AddDialDayState extends State<AddDialDay> {
       onPressed: () {
         Navigator.of(context)
             .push(CupertinoPageRoute<void>(
-                builder: (BuildContext context) => const SelectDayPage()))
+            builder: (BuildContext context) => const SelectDayPage()))
             .then((value) {
           setState(() {});
         });
@@ -226,16 +228,16 @@ class _AddDialTimeState extends State<AddDialTime> {
                     color: CupertinoColors.black,
                     borderRadius: BorderRadius.circular(12),
                     border:
-                        Border.all(width: 1.5, color: CupertinoColors.black)),
+                    Border.all(width: 1.5, color: CupertinoColors.black)),
                 placeholder: selectDateTime[0].hour != selectDateTime[1].hour ||
-                        selectDateTime[0].minute != selectDateTime[1].minute
+                    selectDateTime[0].minute != selectDateTime[1].minute
                     ? makeTime()
                     : "Ex) 6:00 AM ~ 8:30 PM",
                 placeholderStyle:
-                    selectDateTime[0].hour != selectDateTime[1].hour ||
-                            selectDateTime[0].minute != selectDateTime[1].minute
-                        ? TextStyle(color: CupertinoColors.systemRed)
-                        : TextStyle(color: CupertinoColors.inactiveGray),
+                selectDateTime[0].hour != selectDateTime[1].hour ||
+                    selectDateTime[0].minute != selectDateTime[1].minute
+                    ? TextStyle(color: CupertinoColors.systemRed)
+                    : TextStyle(color: CupertinoColors.inactiveGray),
                 padding: EdgeInsets.all(10),
                 style: TextStyle(fontSize: 16),
               ),
@@ -253,7 +255,7 @@ class _AddDialTimeState extends State<AddDialTime> {
         onPressed: () {
           Navigator.of(context)
               .push(CupertinoPageRoute<void>(
-                  builder: (BuildContext context) => const SelectTimePage()))
+              builder: (BuildContext context) => const SelectTimePage()))
               .then((value) {
             setState(() {});
           });
@@ -298,10 +300,16 @@ class _AddButtonState extends State<AddButton> {
                   );
                 });
           } else {
-            if (selectDateTime[0]
-                .add(Duration(hours: 1))
+            Navigator.pop(context);
+
+            if (selectDateTime[0].isAfter(selectDateTime[1])) {
+              selectDateTime[1] =
+                  selectDateTime[1].add(const Duration(days: 1));
+            } else if (selectDateTime[0]
+                .add(const Duration(hours: 1))
                 .isAfter(selectDateTime[1])) {
-              selectDateTime[1] = selectDateTime[0].add(Duration(hours: 1));
+              selectDateTime[1] =
+                  selectDateTime[0].add(const Duration(hours: 1));
             }
 
             DialManager().addDial(
@@ -312,7 +320,8 @@ class _AddButtonState extends State<AddButton> {
                     start:
                         Time(selectDateTime[0].hour, selectDateTime[0].minute),
                     finish: Time(
-                        selectDateTime[1].hour, selectDateTime[1].minute)));
+                        max(selectDateTime[1].hour, selectDateTime[0].hour + 1),
+                        selectDateTime[1].minute)));
           }
         });
   }
