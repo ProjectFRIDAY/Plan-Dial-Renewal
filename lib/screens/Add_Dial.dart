@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../models/dial_manager.dart';
+import '../models/time.dart';
+import '../models/week_schedule.dart';
 import 'select_page.dart';
 
+/// 확인버튼 클릭시 정보를 다 입력했는지 확인하는 변수
 bool isFinish = false;
 
 // Add Dial Page
@@ -26,6 +30,7 @@ class AddDialPage extends StatelessWidget {
         AddDialDay(),
         AddDialTime(),
         Spacer(),
+        AddButton(),
         SizedBox(
           height: 80,
         )
@@ -62,8 +67,25 @@ class AddDialTop extends StatelessWidget {
   }
 }
 
-class AddDialName extends StatelessWidget {
+/// 다이얼 이름을 저장하고 백엔드로 보내기 위해 잠깐 저장하는 변수
+String tempDialName = '';
+
+/// DialName의 값을 입력받는 칸
+class AddDialName extends StatefulWidget {
   const AddDialName({Key? key}) : super(key: key);
+
+  @override
+  State<AddDialName> createState() => _AddDialNameState();
+}
+
+class _AddDialNameState extends State<AddDialName> {
+  final dialNameController = TextEditingController();
+
+  @override
+  void dispose() {
+    dialNameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,14 +95,19 @@ class AddDialName extends StatelessWidget {
         children: [
           Expanded(
             child: CupertinoTextField(
+              autocorrect: false,
+              controller: dialNameController,
               decoration: BoxDecoration(
-                  color: CupertinoColors.extraLightBackgroundGray,
+                  color: Color.fromARGB(255, 248, 248, 248),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(width: 1.5, color: CupertinoColors.black)),
               placeholder: "Ex) 독서하기",
               placeholderStyle: TextStyle(color: CupertinoColors.inactiveGray),
               padding: EdgeInsets.all(10),
               style: TextStyle(fontSize: 16),
+              onChanged: (text) {
+                tempDialName = text;
+              },
             ),
           ),
           const SizedBox(
@@ -96,6 +123,7 @@ class AddDialName extends StatelessWidget {
   }
 }
 
+/// Dial Day를 선택하는 페이지로 이동하는 버튼 및 선택된 요일 표기
 class AddDialDay extends StatefulWidget {
   const AddDialDay({Key? key}) : super(key: key);
 
@@ -104,10 +132,30 @@ class AddDialDay extends StatefulWidget {
 }
 
 class _AddDialDayState extends State<AddDialDay> {
+  List<String> showDay = ['월', '화', '수', '목', '금', '토', '일'];
+
+  String dayNames() {
+    String result = '';
+    for (var i = 0; i <= 6; i++) {
+      if (selectDayNumber[i] == 1) {
+        result += showDay[i];
+        result += ' / ';
+      }
+    }
+    return result.substring(0, result.length - 3);
+  }
+
+  bool isSelectDay() {
+    setState(() {});
+    if (selectDayNumber.contains(1))
+      return true;
+    else
+      return false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: CupertinoButton(
+    return CupertinoButton(
       child: Row(
         children: [
           Expanded(
@@ -117,8 +165,10 @@ class _AddDialDayState extends State<AddDialDay> {
                   color: CupertinoColors.black,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(width: 1.5, color: CupertinoColors.black)),
-              placeholder: "Ex) 월 / 화 / 수",
-              placeholderStyle: TextStyle(color: CupertinoColors.inactiveGray),
+              placeholder: isSelectDay() ? dayNames() : "Ex) 월 / 화 / 수",
+              placeholderStyle: isSelectDay()
+                  ? TextStyle(color: CupertinoColors.systemRed)
+                  : TextStyle(color: CupertinoColors.inactiveGray),
               padding: EdgeInsets.all(10),
               style: TextStyle(fontSize: 16),
             ),
@@ -133,13 +183,18 @@ class _AddDialDayState extends State<AddDialDay> {
         ],
       ),
       onPressed: () {
-        Navigator.of(context).push(CupertinoPageRoute<void>(
-            builder: (BuildContext context) => const SelectDayPage()));
+        Navigator.of(context)
+            .push(CupertinoPageRoute<void>(
+                builder: (BuildContext context) => const SelectDayPage()))
+            .then((value) {
+          setState(() {});
+        });
       },
-    ));
+    );
   }
 }
 
+/// Dial Time을 선택하는 페이지로 이동 및 선택된 시간 표기
 class AddDialTime extends StatefulWidget {
   const AddDialTime({Key? key}) : super(key: key);
 
@@ -148,6 +203,17 @@ class AddDialTime extends StatefulWidget {
 }
 
 class _AddDialTimeState extends State<AddDialTime> {
+  String makeTime() {
+    String result = '';
+    for (var i = 0; i < 2; i++) {
+      result += selectDateTime[i].hour.toString() +
+          ':' +
+          selectDateTime[i].minute.toString() +
+          ' ~ ';
+    }
+    return result.substring(0, result.length - 3);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
@@ -161,9 +227,15 @@ class _AddDialTimeState extends State<AddDialTime> {
                     borderRadius: BorderRadius.circular(12),
                     border:
                         Border.all(width: 1.5, color: CupertinoColors.black)),
-                placeholder: "Ex) 6:00 AM ~ 8:30 PM",
+                placeholder: selectDateTime[0].hour != selectDateTime[1].hour ||
+                        selectDateTime[0].minute != selectDateTime[1].minute
+                    ? makeTime()
+                    : "Ex) 6:00 AM ~ 8:30 PM",
                 placeholderStyle:
-                    TextStyle(color: CupertinoColors.inactiveGray),
+                    selectDateTime[0].hour != selectDateTime[1].hour ||
+                            selectDateTime[0].minute != selectDateTime[1].minute
+                        ? TextStyle(color: CupertinoColors.systemRed)
+                        : TextStyle(color: CupertinoColors.inactiveGray),
                 padding: EdgeInsets.all(10),
                 style: TextStyle(fontSize: 16),
               ),
@@ -171,7 +243,7 @@ class _AddDialTimeState extends State<AddDialTime> {
             const SizedBox(
               width: 16,
             ),
-            const Text('에 할게요',
+            const Text('동안 할게요',
                 style: TextStyle(
                     fontSize: 17,
                     color: CupertinoColors.activeBlue,
@@ -179,8 +251,12 @@ class _AddDialTimeState extends State<AddDialTime> {
           ],
         ),
         onPressed: () {
-          Navigator.of(context).push(CupertinoPageRoute<void>(
-              builder: (BuildContext context) => const SelectTimePage()));
+          Navigator.of(context)
+              .push(CupertinoPageRoute<void>(
+                  builder: (BuildContext context) => const SelectTimePage()))
+              .then((value) {
+            setState(() {});
+          });
         });
   }
 }
@@ -204,7 +280,7 @@ class _AddButtonState extends State<AddButton> {
         ),
         color: CupertinoColors.activeBlue,
         onPressed: () {
-          if (!isFinish) {
+          if (isFinish) {
             showCupertinoDialog(
                 context: context,
                 builder: (context) {
@@ -221,6 +297,18 @@ class _AddButtonState extends State<AddButton> {
                     ],
                   );
                 });
+          } else {
+            DialManager().addDial(
+                tempDialName,
+                DateTime.now(),
+                WeekSchedule.byUserInput(
+                    selectDayNumber: selectDayNumber,
+                    start:
+                        Time(selectDateTime[0].hour, selectDateTime[0].minute),
+                    finish: Time(
+                        selectDateTime[1].hour, selectDateTime[1].minute)));
+
+            Navigator.pop(context);
           }
         });
   }

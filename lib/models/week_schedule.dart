@@ -1,17 +1,18 @@
 import 'dart:ui';
 
 import 'package:plan_dial_renewal/models/schedule.dart';
+import 'package:plan_dial_renewal/models/time.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 /// 일주일 일정 스케쥴을 담는 클래스
 class WeekSchedule {
-  final Schedule? monday;
-  final Schedule? tuesday;
-  final Schedule? wednesday;
-  final Schedule? thursday;
-  final Schedule? friday;
-  final Schedule? saturday;
-  final Schedule? sunday;
+  Schedule? monday;
+  Schedule? tuesday;
+  Schedule? wednesday;
+  Schedule? thursday;
+  Schedule? friday;
+  Schedule? saturday;
+  Schedule? sunday;
 
   WeekSchedule(
       {this.monday,
@@ -21,6 +22,47 @@ class WeekSchedule {
       this.friday,
       this.saturday,
       this.sunday});
+
+  WeekSchedule.byUserInput(
+      {required List<int> selectDayNumber,
+      required Time start,
+      required Time finish}) {
+    int day = DateTime.monday;
+    var schedule = Schedule(start, finish);
+    for (int dayNumber in selectDayNumber) {
+      if (dayNumber == 1) {
+        setScheduleByIndex(day, schedule);
+      }
+      day++;
+    }
+  }
+
+  /// 인덱스로 일정에 접근하는 함수
+  void setScheduleByIndex(int weekdayIndex, Schedule schedule) {
+    switch (weekdayIndex) {
+      case DateTime.monday:
+        monday = schedule;
+        break;
+      case DateTime.tuesday:
+        tuesday = schedule;
+        break;
+      case DateTime.wednesday:
+        wednesday = schedule;
+        break;
+      case DateTime.thursday:
+        thursday = schedule;
+        break;
+      case DateTime.friday:
+        friday = schedule;
+        break;
+      case DateTime.saturday:
+        saturday = schedule;
+        break;
+      case DateTime.sunday:
+        sunday = schedule;
+        break;
+    }
+  }
 
   /// 인덱스로 일정에 접근하는 함수
   Schedule? getScheduleByIndex(int weekdayIndex) {

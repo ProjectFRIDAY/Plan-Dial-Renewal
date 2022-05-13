@@ -30,7 +30,7 @@ class SelectDayList extends StatefulWidget {
 }
 
 class _SelectDayListState extends State<SelectDayList> {
-  List<String> dayNameList = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+  List<String> dayNameList = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -42,7 +42,7 @@ class _SelectDayListState extends State<SelectDayList> {
           shrinkWrap: true,
           padding: const EdgeInsets.all(8),
           children: [
-            for (var i = 0; i < 7; i++) SelectDayButton(dayNameList[i])
+            for (var i = 0; i < 7; i++) SelectDayButton(dayNameList[i], i)
           ],
         ),
       ],
@@ -50,17 +50,25 @@ class _SelectDayListState extends State<SelectDayList> {
   }
 }
 
+List<int> selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
+
 // Day select Button
 class SelectDayButton extends StatefulWidget {
   final String dayName;
-  SelectDayButton(this.dayName) : super();
+  final int dayCount;
+  SelectDayButton(this.dayName, this.dayCount) : super();
 
   @override
   State<SelectDayButton> createState() => _SelectDayButtonState();
 }
 
 class _SelectDayButtonState extends State<SelectDayButton> {
-  bool ischecked = false;
+  bool isChecked() {
+    if (1 == selectDayNumber[widget.dayCount]) {
+      return true;
+    } else
+      return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +86,7 @@ class _SelectDayButtonState extends State<SelectDayButton> {
                 const Spacer(),
                 Icon(
                   CupertinoIcons.check_mark,
-                  color: ischecked
+                  color: isChecked()
                       ? CupertinoColors.activeBlue
                       : CupertinoColors.white,
                 )
@@ -92,10 +100,10 @@ class _SelectDayButtonState extends State<SelectDayButton> {
         ),
         onPressed: () {
           setState(() {
-            if (ischecked) {
-              ischecked = false;
+            if (isChecked()) {
+              selectDayNumber[widget.dayCount] = 0;
             } else {
-              ischecked = true;
+              selectDayNumber[widget.dayCount] = 1;
             }
           });
         });
@@ -130,6 +138,8 @@ class SelectTimePicker extends StatefulWidget {
   State<SelectTimePicker> createState() => _SelectTimePickerState();
 }
 
+List<DateTime> selectDateTime = [DateTime.now(), DateTime.now()];
+
 class _SelectTimePickerState extends State<SelectTimePicker> {
   final Map<int, Widget> children = const <int, Widget>{
     0: Text('시작시간'),
@@ -137,9 +147,6 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
   };
 
   int? currentValue = 0;
-  DateTime _startTime = DateTime.now();
-  DateTime _stopTime = DateTime.now();
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -151,7 +158,7 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
               child: CupertinoDatePicker(
                 mode: CupertinoDatePickerMode.time,
                 onDateTimeChanged: (value) {
-                  _startTime = value;
+                  selectDateTime[0] = value;
                 },
                 initialDateTime: DateTime.now(),
               ),
@@ -161,7 +168,7 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
               child: CupertinoDatePicker(
                 mode: CupertinoDatePickerMode.time,
                 onDateTimeChanged: (value) {
-                  _stopTime = value;
+                  selectDateTime[1] = value;
                 },
                 initialDateTime: DateTime.now(),
               ),
@@ -176,32 +183,11 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
             },
             groupValue: currentValue,
           ),
-          Text(_startTime.toString()),
-          Text(_stopTime.toString()),
           const SizedBox(
-            height: 30,
+            height: 50,
           ),
         ],
       ),
     );
   }
-}
-
-// SelectTimePage Route
-Route createRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => SelectTimePicker(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(0.0, 1.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
 }
