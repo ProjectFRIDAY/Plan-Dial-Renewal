@@ -66,17 +66,17 @@ class Dial {
   }
 
   static String secondsToString(int seconds) {
-    assert(seconds >= 0);
-
     if (seconds >= 60 * 60 * 24) {
       seconds = (seconds / (60 * 60 * 24)).floor();
       return seconds.toString() + "일 전";
     } else if (seconds >= 60 * 60) {
       seconds = (seconds / (60 * 60)).floor();
       return seconds.toString() + "시간 전";
-    } else {
+    } else if (seconds >= 0) {
       seconds = (seconds / 60).floor();
       return seconds.toString() + "분 전";
+    } else {
+      return "지금";
     }
   }
 

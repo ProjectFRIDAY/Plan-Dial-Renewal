@@ -28,7 +28,7 @@ class DbManager {
         db.execute(
             "CREATE TABLE schedule(id INTEGER, name TEXT, monday TEXT, tuesday TEXT, wednesday TEXT, thursday TEXT, friday TEXT, saturday TEXT, sunday TEXT)");
         db.execute(
-            "CREATE TABLE checklist(id INTEGER, name TEXT, date TEXT, archived INTEGER)");
+            "CREATE TABLE checklist(id INTEGER PRIMARY KEY, name TEXT, date TEXT, dial INTEGER)");
       },
       version: _version,
     );
@@ -158,5 +158,57 @@ class DbManager {
         await db.rawQuery('SELECT MAX(id) FROM dial');
 
     return (maps[0]['id'] ?? 0) + 1;
+  }
+
+  Future<int> getCheckListId(int dialId, int year, int month, int day) async {
+    int result = -1;
+
+    final Database db = await _getDatabase();
+
+    List<Map<String, dynamic>> maps = await db.query(
+      "checklist",
+      where: "dial = ? AND date = ?",
+      whereArgs: [dialId, _dateToString(year, month, day)],
+    );
+
+    if (maps.isNotEmpty) {
+      result = maps[0]["id"];
+    }
+
+    return result;
+  }
+
+  Future<void> check(Dial dial, int year, int month, int day) async {
+    final Database db = await _getDatabase();
+    final id = await getCheckListId(dial.id, year, month, day);
+
+    if (id < 0) {
+      await db.insert(
+        'checklist',
+        {
+          'name': dial.name,
+          'date': _dateToString(year, month, day),
+          'dial': dial.id,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+  }
+
+  Future<void> uncheck(Dial dial, int year, int month, int day) async {
+    final Database db = await _getDatabase();
+    final id = await getCheckListId(dial.id, year, month, day);
+
+    if (id >= 0) {
+      await db.delete(
+        'checklist',
+        where: "dial = ? AND date = ?",
+        whereArgs: [dial.id, _dateToString(year, month, day)],
+      );
+    }
+  }
+
+  String _dateToString(int year, int month, int day) {
+    return year.toString() + "/" + month.toString() + "/" + day.toString();
   }
 }
