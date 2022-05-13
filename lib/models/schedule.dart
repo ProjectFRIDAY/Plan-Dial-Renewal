@@ -11,21 +11,30 @@ class Schedule {
 
   Schedule(this.start, [Time? finish]) {
     if (finish == null) {
-      this.finish = Time(start.hour + defaultDuration, start.minute);
+      this.finish = Time((start.hour + defaultDuration) % 24, start.minute);
     } else {
-      assert(finish.isLaterThan(start)); // start가 finish 이전이어야 함.
       this.finish = finish;
     }
   }
 
   Appointment toAppointment(String title, Color color, DateTime date) {
+    var startTime = start
+        .toDateTime(date.year, date.month, date.day)
+        .subtract(const Duration(days: 7));
+
+    var endTime = finish
+        .toDateTime(date.year, date.month, date.day)
+        .subtract(const Duration(days: 7));
+
+    if (startTime.isAfter(endTime)) {
+      endTime = endTime.add(const Duration(days: 1));
+    } else if (startTime.add(const Duration(hours: 1)).isAfter(endTime)) {
+      endTime = startTime.add(const Duration(hours: 1));
+    }
+
     return Appointment(
-      startTime: start
-          .toDateTime(date.year, date.month, date.day)
-          .subtract(const Duration(days: 7)),
-      endTime: finish
-          .toDateTime(date.year, date.month, date.day)
-          .subtract(const Duration(days: 7)),
+      startTime: startTime,
+      endTime: endTime,
       subject: title,
       color: color,
       recurrenceRule: "FREQ=DAILY;INTERVAL=7;COUNT=2",

@@ -55,6 +55,7 @@ class DialManager {
   }
 
   Future<void> removeAllDials() async {
+    dials.clear();
     await DbManager().clear();
     NotiManager().removeAllNotifications();
     notifyObservers();

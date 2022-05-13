@@ -157,7 +157,6 @@ class DbManager {
     List<Map<String, dynamic>> maps =
         await db.rawQuery('SELECT MAX(id) FROM dial');
 
-    print(maps.toString());
     return (maps[0]['id'] ?? 0) + 1;
   }
 }

@@ -9,7 +9,11 @@ class CheckList extends StatefulWidget {
   State<CheckList> createState() => _CheckListState();
 }
 
-class _CheckListState extends State<CheckList> {
+class _CheckListState extends State<CheckList> implements Observer {
+  _CheckListState() {
+    DialManager().addObserver(this);
+  }
+
   @override
   Widget build(BuildContext context) {
     final todayDials = DialManager().getTodayDials();
@@ -21,6 +25,11 @@ class _CheckListState extends State<CheckList> {
         return CheckBox(todayDials[i].name);
       }),
     );
+  }
+
+  @override
+  void onChanged() {
+    if (mounted) setState(() {});
   }
 }
 

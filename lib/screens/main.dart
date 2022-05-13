@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
 
   @override
   void onChanged() {
-    setState(() {});
+    if (mounted) setState(() {});
   }
 }
 
@@ -139,7 +139,7 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
 
   @override
   void onChanged() {
-    setState(() {});
+    if (mounted) setState(() {});
   }
 }
 

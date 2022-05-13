@@ -38,7 +38,7 @@ class _CalendarState extends State<Calendar> implements Observer {
 
   @override
   void onChanged() {
-    setState(() {});
+    if (mounted) setState(() {});
   }
 }
 
