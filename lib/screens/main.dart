@@ -115,11 +115,7 @@ class ListViewWidget extends StatefulWidget {
   late final Icon icon;
 
   ListViewWidget(Color color, {Key? key}) : super(key: key) {
-    icon = Icon(
-      CupertinoIcons.alarm_fill,
-      color: color,
-      size: 35,
-    );
+    icon = Icon(CupertinoIcons.alarm_fill, color: color, size: 35);
   }
 
   @override

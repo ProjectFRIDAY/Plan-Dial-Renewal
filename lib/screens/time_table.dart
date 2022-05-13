@@ -60,9 +60,14 @@ class TimeTablePageState extends State<TimeTablePage> {
 }
 
 // Week Page 상단 부분
-class WeekTop extends StatelessWidget {
+class WeekTop extends StatefulWidget {
   const WeekTop({Key? key}) : super(key: key);
 
+  @override
+  State<WeekTop> createState() => _WeekTopState();
+}
+
+class _WeekTopState extends State<WeekTop> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -113,9 +118,13 @@ class WeekTop extends StatelessWidget {
                         padding: const EdgeInsets.all(0.0),
                         minSize: 0,
                         onPressed: () {
-                          Navigator.of(context).push(CupertinoPageRoute<void>(
-                              builder: (BuildContext context) =>
-                                  const AddDialPage()));
+                          Navigator.of(context)
+                              .push(CupertinoPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      const AddDialPage()))
+                              .then((value) {
+                            setState(() {});
+                          });
                           selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
                           selectDateTime = [DateTime.now(), DateTime.now()];
                         },

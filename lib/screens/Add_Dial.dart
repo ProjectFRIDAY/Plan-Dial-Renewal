@@ -298,6 +298,12 @@ class _AddButtonState extends State<AddButton> {
                   );
                 });
           } else {
+            if (selectDateTime[0]
+                .add(Duration(hours: 1))
+                .isAfter(selectDateTime[1])) {
+              selectDateTime[1] = selectDateTime[0].add(Duration(hours: 1));
+            }
+
             DialManager().addDial(
                 tempDialName,
                 DateTime.now(),
