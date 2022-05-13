@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'select_page.dart';
 
+/// 확인버튼 클릭시 정보를 다 입력했는지 확인하는 변수
 bool isFinish = false;
 
 // Add Dial Page
@@ -63,8 +64,10 @@ class AddDialTop extends StatelessWidget {
   }
 }
 
+/// 다이얼 이름을 저장하고 백엔드로 보내기 위해 잠깐 저장하는 변수
 String tempDialName = '';
 
+/// DialName의 값을 입력받는 칸
 class AddDialName extends StatefulWidget {
   const AddDialName({Key? key}) : super(key: key);
 
@@ -116,6 +119,7 @@ class _AddDialNameState extends State<AddDialName> {
   }
 }
 
+/// Dial Day를 선택하는 페이지로 이동하는 버튼 및 선택된 요일 표기
 class AddDialDay extends StatefulWidget {
   const AddDialDay({Key? key}) : super(key: key);
 
@@ -186,6 +190,7 @@ class _AddDialDayState extends State<AddDialDay> {
   }
 }
 
+/// Dial Time을 선택하는 페이지로 이동 및 선택된 시간 표기
 class AddDialTime extends StatefulWidget {
   const AddDialTime({Key? key}) : super(key: key);
 
@@ -289,6 +294,7 @@ class _AddButtonState extends State<AddButton> {
                   );
                 });
           } else {
+            /// 여기서 백엔드로 데이터 전송해야함.
             print(selectDayNumber);
             print(tempDialName);
             print(selectDateTime);

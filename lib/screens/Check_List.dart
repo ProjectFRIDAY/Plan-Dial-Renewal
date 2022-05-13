@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 
+/// CheckButton을 리스트 뷰로 보여주는 class
 class CheckList extends StatefulWidget {
   const CheckList({Key? key}) : super(key: key);
 
@@ -23,7 +24,7 @@ class _CheckListState extends State<CheckList> {
   }
 }
 
-// To Do List Check Box
+// To Do List Check Box Class
 class CheckBox extends StatefulWidget {
   final String title;
 
