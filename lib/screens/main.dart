@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
 
   @override
   void onChanged() {
-    setState(() {});
+    if (mounted) setState(() {});
   }
 }
 
@@ -115,11 +115,7 @@ class ListViewWidget extends StatefulWidget {
   late final Icon icon;
 
   ListViewWidget(Color color, {Key? key}) : super(key: key) {
-    icon = Icon(
-      CupertinoIcons.alarm_fill,
-      color: color,
-      size: 35,
-    );
+    icon = Icon(CupertinoIcons.alarm_fill, color: color, size: 35);
   }
 
   @override
@@ -143,7 +139,7 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
 
   @override
   void onChanged() {
-    setState(() {});
+    if (mounted) setState(() {});
   }
 }
 

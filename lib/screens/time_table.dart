@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../models/dial_manager.dart';
 import 'add_dial.dart';
 import 'calendar.dart';
 import 'check_list.dart';
+import 'select_page.dart';
 
 // TimeTable slid sement control (하단에 Week & Today 버튼)
 class TimeTablePage extends StatefulWidget {
@@ -59,9 +61,14 @@ class TimeTablePageState extends State<TimeTablePage> {
 }
 
 // Week Page 상단 부분
-class WeekTop extends StatelessWidget {
+class WeekTop extends StatefulWidget {
   const WeekTop({Key? key}) : super(key: key);
 
+  @override
+  State<WeekTop> createState() => _WeekTopState();
+}
+
+class _WeekTopState extends State<WeekTop> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -94,6 +101,7 @@ class WeekTop extends StatelessWidget {
                                           child: const Text("확인"),
                                           onPressed: () {
                                             Navigator.pop(context);
+                                            DialManager().removeAllDials();
                                           }),
                                       CupertinoDialogAction(
                                           isDefaultAction: true,
@@ -111,10 +119,17 @@ class WeekTop extends StatelessWidget {
                     CupertinoButton(
                         padding: const EdgeInsets.all(0.0),
                         minSize: 0,
-                        onPressed: () => Navigator.of(context).push(
-                            CupertinoPageRoute<void>(
-                                builder: (BuildContext context) =>
-                                    const AddDialPage())),
+                        onPressed: () {
+                          Navigator.of(context)
+                              .push(CupertinoPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      const AddDialPage()))
+                              .then((value) {
+                            setState(() {});
+                          });
+                          selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
+                          selectDateTime = [DateTime.now(), DateTime.now()];
+                        },
                         child: const Icon(CupertinoIcons.add, size: 25)),
                   ]),
               flex: 30),

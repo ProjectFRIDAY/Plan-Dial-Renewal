@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+/// TimeTable 페이지의 캘린더
 class Calendar extends StatefulWidget {
   const Calendar({Key? key}) : super(key: key);
 
@@ -9,7 +10,11 @@ class Calendar extends StatefulWidget {
   State<Calendar> createState() => _CalendarState();
 }
 
-class _CalendarState extends State<Calendar> {
+class _CalendarState extends State<Calendar> implements Observer {
+  _CalendarState() {
+    DialManager().addObserver(this);
+  }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -18,6 +23,7 @@ class _CalendarState extends State<Calendar> {
 
     return SfCalendar(
       view: CalendarView.week,
+      todayHighlightColor: Color.fromARGB(196, 145, 48, 255),
       timeSlotViewSettings:
           const TimeSlotViewSettings(timeInterval: Duration(hours: 2)),
       headerHeight: 0,
@@ -29,25 +35,11 @@ class _CalendarState extends State<Calendar> {
       minDate: baseDate,
     );
   }
-}
 
-@Deprecated("For Test")
-List<Appointment> getAppointments() {
-  List<Appointment> meetings = <Appointment>[];
-  final DateTime today = DateTime.now();
-  final DateTime startTime =
-      DateTime(today.year, today.month, today.day, 13, 0, 0);
-  final DateTime endTime = startTime.add(const Duration(hours: 1));
-
-  meetings.add(Appointment(
-      startTime: startTime,
-      endTime: endTime,
-      subject: 'test',
-      color: CupertinoColors.activeBlue,
-      // 나중에 요일별 다이얼로 대체할 예정임.
-      recurrenceRule: 'FREQ=DAILY;COUNT=3'));
-
-  return meetings;
+  @override
+  void onChanged() {
+    if (mounted) setState(() {});
+  }
 }
 
 class MeetingDataSource extends CalendarDataSource {
