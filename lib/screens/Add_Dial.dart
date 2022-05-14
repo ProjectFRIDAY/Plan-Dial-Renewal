@@ -92,6 +92,8 @@ class _AddDialNameState extends State<AddDialName> {
         children: [
           Expanded(
             child: CupertinoTextField(
+              autofocus: true,
+              keyboardType: TextInputType.text,
               autocorrect: false,
               controller: dialNameController,
               decoration: BoxDecoration(
