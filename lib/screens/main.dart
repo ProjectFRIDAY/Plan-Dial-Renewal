@@ -98,14 +98,17 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
               icon: SizedBox(
                 height: 15,
                 width: 15,
-                child: CircularProgressIndicator(
-                  backgroundColor: const Color.fromARGB(255, 204, 0, 0),
-                  valueColor: const AlwaysStoppedAnimation(
-                      Color.fromARGB(255, 255, 051, 051)),
-                  strokeWidth: 36,
-                  value: urgentDial == null
-                      ? 0
-                      : urgentDial.getLeftTimeInSeconds() / danceparty,
+                child: Transform(
+                  transform: Matrix4.rotationY(3.14), // 좌우 반전
+                  child: CircularProgressIndicator(
+                    backgroundColor: Color.fromARGB(255, 234, 142, 134),
+                    valueColor: const AlwaysStoppedAnimation(
+                        Color.fromARGB(255, 234, 76, 62)),
+                    strokeWidth: 36,
+                    value: urgentDial == null
+                        ? 0
+                        : urgentDial.getLeftTimeInSeconds() / danceparty,
+                  ),
                 ),
               ),
             ),
@@ -203,7 +206,7 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
 
         // The end action pane is the one at the right or the bottom side.
         endActionPane: ActionPane(
-          motion: DrawerMotion(),
+          motion: const DrawerMotion(),
           children: [
             !widget.dial.disabled
                 ? SlidableAction(
@@ -263,11 +266,26 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
         // component is not dragged.
         child: ListTile(
             tileColor: CupertinoColors.white,
-            leading: Icon(CupertinoIcons.calendar_circle_fill,
-                color: widget.dial.disabled
-                    ? CupertinoColors.inactiveGray
-                    : CupertinoColors.activeBlue,
-                size: 40),
+            leading: Padding(
+              padding: const EdgeInsets.fromLTRB(22, 15, 0, 8),
+              child: SizedBox(
+                height: 10,
+                width: 10,
+                child: Transform(
+                  transform: Matrix4.rotationY(3.14), // 좌우 반전
+                  child: CircularProgressIndicator(
+                    backgroundColor: widget.dial.disabled
+                        ? Color.fromARGB(255, 180, 180, 180)
+                        : Color.fromARGB(255, 215, 209, 250),
+                    valueColor: AlwaysStoppedAnimation(widget.dial.disabled
+                        ? Color.fromARGB(255, 100, 100, 100)
+                        : Color.fromARGB(255, 85, 104, 206)),
+                    strokeWidth: 36,
+                    value: widget.dial.getLeftTimeInSeconds() / danceparty,
+                  ),
+                ),
+              ),
+            ),
             title: Text(widget.dial.name,
                 style: TextStyle(fontWeight: FontWeight.w600)),
             subtitle:
