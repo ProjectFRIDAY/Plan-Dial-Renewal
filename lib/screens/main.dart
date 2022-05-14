@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                 ),
               ),
             ),
-            const ListIndexWidget("Dial"),
+            const ListIndexWidget("Dials"),
             const Expanded(child: ListViewWidget())
           ],
         ),
@@ -159,7 +159,6 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
     var dials = DialManager().getAllDials();
     dials.sort(
         (a, b) => a.getLeftTimeInSeconds().compareTo(b.getLeftTimeInSeconds()));
-    if (dials.isNotEmpty) dials.removeAt(0);
 
     if (_loading) {
       return const Center(
