@@ -98,9 +98,9 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                 child: Transform(
                   transform: Matrix4.rotationY(3.14), // 좌우 반전
                   child: CircularProgressIndicator(
-                    backgroundColor: Color.fromARGB(255, 252, 92, 61),
+                    backgroundColor: Color.fromARGB(255, 234, 142, 134),
                     valueColor: const AlwaysStoppedAnimation(
-                        Color.fromARGB(255, 252, 174, 156)),
+                        Color.fromARGB(255, 234, 76, 62)),
                     strokeWidth: 36,
                     value: urgentDial == null
                         ? 0
@@ -259,9 +259,9 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                 child: Transform(
                   transform: Matrix4.rotationY(3.14), // 좌우 반전
                   child: CircularProgressIndicator(
-                    backgroundColor: Color.fromARGB(255, 0, 17, 255),
+                    backgroundColor: Color.fromARGB(255, 215, 209, 250),
                     valueColor: const AlwaysStoppedAnimation(
-                        Color.fromARGB(255, 255, 051, 051)),
+                        Color.fromARGB(255, 85, 104, 206)),
                     strokeWidth: 36,
                     value: widget.dial.getLeftTimeInSeconds() / danceparty,
                   ),
