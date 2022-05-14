@@ -191,7 +191,7 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
 
         // The end action pane is the one at the right or the bottom side.
         endActionPane: ActionPane(
-          motion: DrawerMotion(),
+          motion: const DrawerMotion(),
           children: [
             !widget.dial.disabled
                 ? SlidableAction(
@@ -259,9 +259,12 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                 child: Transform(
                   transform: Matrix4.rotationY(3.14), // 좌우 반전
                   child: CircularProgressIndicator(
-                    backgroundColor: Color.fromARGB(255, 215, 209, 250),
-                    valueColor: const AlwaysStoppedAnimation(
-                        Color.fromARGB(255, 85, 104, 206)),
+                    backgroundColor: widget.dial.disabled
+                        ? Color.fromARGB(255, 180, 180, 180)
+                        : Color.fromARGB(255, 215, 209, 250),
+                    valueColor: AlwaysStoppedAnimation(widget.dial.disabled
+                        ? Color.fromARGB(255, 100, 100, 100)
+                        : Color.fromARGB(255, 85, 104, 206)),
                     strokeWidth: 36,
                     value: widget.dial.getLeftTimeInSeconds() / danceparty,
                   ),
