@@ -25,38 +25,45 @@ class TimeTablePageState extends State<TimeTablePage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> contents;
+
+    if (currentValue == 0) {
+      contents = [
+        WeekTop(),
+        // Week Page == Calendar
+        Expanded(child: Calendar()),
+      ];
+    } else {
+      contents = [
+        TodayTop(),
+        Expanded(child: TodayPage()),
+      ];
+    }
+
     return SafeArea(
-        child: Column(
-      children: [
-        // Week Page & Today Page 구분
-        if (currentValue == 0)
-          Column(
-            children: const [
-              WeekTop(),
-              // Week Page == Calendar
-              SizedBox(height: 500, child: Calendar())
-            ],
-          )
-        else
-          Column(
-            children: const [TodayTop(), TodayPage()],
+      child: Column(
+        children: [
+          // Week Page & Today Page 구분
+          Expanded(
+              flex: 8,
+              child: Column(
+                children: contents,
+              )),
+          Expanded(
+            child: CupertinoSlidingSegmentedControl<int>(
+              padding: EdgeInsets.all(4),
+              children: children,
+              onValueChanged: (int? newValue) {
+                setState(() {
+                  currentValue = newValue;
+                });
+              },
+              groupValue: currentValue,
+            ),
           ),
-        const Spacer(),
-        CupertinoSlidingSegmentedControl<int>(
-          padding: EdgeInsets.all(4),
-          children: children,
-          onValueChanged: (int? newValue) {
-            setState(() {
-              currentValue = newValue;
-            });
-          },
-          groupValue: currentValue,
-        ),
-        const SizedBox(
-          height: 25,
-        )
-      ],
-    ));
+        ],
+      ),
+    );
   }
 }
 
@@ -189,7 +196,7 @@ class TodayPage extends StatelessWidget {
                   fontWeight: FontWeight.w500)),
         ]),
         const SizedBox(height: 10),
-        const CheckList()
+        const Expanded(child: CheckList()),
       ],
     );
   }
