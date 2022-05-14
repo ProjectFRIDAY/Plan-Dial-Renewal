@@ -142,10 +142,13 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
         (a, b) => a.getLeftTimeInSeconds().compareTo(b.getLeftTimeInSeconds()));
     if (dials.isNotEmpty) dials.removeAt(0);
 
+    print("tttTest ==================");
+
     return ListView(
       children: List.generate(
         dials.length,
         (i) {
+          print("tttTest " + i.toString() + " " + dials[i].toString());
           return SlideIndexWidget(dials[i]);
         },
       ),
@@ -164,14 +167,10 @@ class SlideIndexWidget extends StatefulWidget {
   const SlideIndexWidget(this.dial, {Key? key}) : super(key: key);
 
   @override
-  State<SlideIndexWidget> createState() => _SlideIndexWidgetState(dial);
+  State<SlideIndexWidget> createState() => _SlideIndexWidgetState();
 }
 
 class _SlideIndexWidgetState extends State<SlideIndexWidget> {
-  final Dial dial;
-
-  _SlideIndexWidgetState(this.dial);
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -183,11 +182,11 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
         endActionPane: ActionPane(
           motion: DrawerMotion(),
           children: [
-            !dial.disabled
+            !widget.dial.disabled
                 ? SlidableAction(
                     onPressed: (context) {
-                      dial.disabled = true;
-                      DialManager().updateDial(dial);
+                      widget.dial.disabled = true;
+                      DialManager().updateDial(widget.dial);
                     },
                     foregroundColor: Colors.white,
                     backgroundColor: CupertinoColors.inactiveGray,
@@ -196,8 +195,8 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                   )
                 : SlidableAction(
                     onPressed: (context) {
-                      dial.disabled = false;
-                      DialManager().updateDial(dial);
+                      widget.dial.disabled = false;
+                      DialManager().updateDial(widget.dial);
                     },
                     foregroundColor: Colors.white,
                     backgroundColor: Color.fromARGB(255, 49, 149, 255),
@@ -210,14 +209,14 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                     context: context,
                     builder: (context) {
                       return CupertinoAlertDialog(
-                        title: Text('\"' + dial.name + '\" 일정 삭제'),
+                        title: Text('\"' + widget.dial.name + '\" 일정 삭제'),
                         content: Text('\'확인\'을 누르시면 일정이 삭제됩니다.'),
                         actions: [
                           CupertinoDialogAction(
                               isDefaultAction: true,
                               child: const Text("확인"),
                               onPressed: () {
-                                DialManager().removeDialById(dial.id);
+                                DialManager().removeDialById(widget.dial.id);
                                 Navigator.pop(context);
                               }),
                           CupertinoDialogAction(
@@ -242,13 +241,14 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
         child: ListTile(
             tileColor: CupertinoColors.white,
             leading: Icon(CupertinoIcons.calendar_circle_fill,
-                color: dial.disabled
+                color: widget.dial.disabled
                     ? CupertinoColors.inactiveGray
                     : CupertinoColors.activeBlue,
                 size: 40),
-            title:
-                Text(dial.name, style: TextStyle(fontWeight: FontWeight.w600)),
-            subtitle: Text(Dial.secondsToString(dial.getLeftTimeInSeconds())),
+            title: Text(widget.dial.name,
+                style: TextStyle(fontWeight: FontWeight.w600)),
+            subtitle:
+                Text(Dial.secondsToString(widget.dial.getLeftTimeInSeconds())),
             trailing: Icon(CupertinoIcons.right_chevron)),
       ),
     );

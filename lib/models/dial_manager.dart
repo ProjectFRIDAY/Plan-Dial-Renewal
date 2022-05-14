@@ -6,8 +6,6 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import '../utils/colors.dart';
 import '../utils/noti_manager.dart';
-import 'schedule.dart';
-import 'time.dart';
 
 class DialManager {
   static const dayChangeHour = 4;
@@ -150,7 +148,8 @@ class DialManager {
 
     for (Dial dial in getAllDials()) {
       if (dial.disabled) {
-        result.addAll(dial.toAppointments(CupertinoColors.inactiveGray));
+        result.addAll(
+            dial.toAppointments(CupertinoColors.inactiveGray.withAlpha(100)));
       } else {
         result.addAll(dial.toAppointments(_colors[colorPicker]));
         colorPicker = (colorPicker + 1) % _colors.length;

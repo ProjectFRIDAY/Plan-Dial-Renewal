@@ -142,4 +142,9 @@ class Dial {
     assert(false, "최초 실행 시간을 구할 수 없습니다.");
     return startTime;
   }
+
+  @override
+  String toString() {
+    return name;
+  }
 }
