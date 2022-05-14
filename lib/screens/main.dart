@@ -93,7 +93,6 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
               subtitle: urgentDial != null
                   ? Dial.secondsToString(urgentDial.getLeftTimeInSeconds())
                   : "다이얼이 없음",
-
               icon: SizedBox(
                 height: 15,
                 width: 15,
@@ -102,9 +101,10 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                   valueColor: AlwaysStoppedAnimation(
                       Color.fromARGB(255, 255, 051, 051)),
                   strokeWidth: 36,
-                  value: urgentDial!.getLeftTimeInSeconds() / danceparty,
+                  value: urgentDial == null
+                      ? 0
+                      : urgentDial.getLeftTimeInSeconds() / danceparty,
                 ),
-
               ),
             ),
             const ListIndexWidget("Dial"),
