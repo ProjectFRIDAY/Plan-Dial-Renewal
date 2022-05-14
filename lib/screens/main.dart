@@ -53,7 +53,7 @@ class BottomNavigation extends StatelessWidget {
     ];
 
     return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(items: items, height: 55),
+      tabBar: CupertinoTabBar(items: items),
       tabBuilder: (context, index) {
         switch (index) {
           case 0:
@@ -267,7 +267,7 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
         child: ListTile(
             tileColor: CupertinoColors.white,
             leading: Padding(
-              padding: const EdgeInsets.fromLTRB(22, 15, 0, 8),
+              padding: const EdgeInsets.fromLTRB(24.5, 15, 10, 8),
               child: SizedBox(
                 height: 10,
                 width: 10,
@@ -339,36 +339,29 @@ class MainTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 20,
-          ),
+          const SizedBox(width: 22.5),
           icon,
-          SizedBox(
-            width: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
+          const SizedBox(width: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              Padding(
+                child: Text(
+                  subtitle,
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 15,
                   ),
                 ),
-                Padding(
-                  child: Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 15,
-                    ),
-                  ),
-                  padding: const EdgeInsets.only(top: 5.0),
-                ),
-              ],
-            ),
+                padding: const EdgeInsets.only(top: 5.0),
+              ),
+            ],
           ),
         ],
       ),

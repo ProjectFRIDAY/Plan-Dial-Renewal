@@ -23,7 +23,7 @@ class _CalendarState extends State<Calendar> implements Observer {
 
     return SfCalendar(
       view: CalendarView.week,
-      todayHighlightColor: Color.fromARGB(196, 145, 48, 255),
+      todayHighlightColor: Color.fromARGB(255, 255, 97, 89),
       timeSlotViewSettings:
           const TimeSlotViewSettings(timeInterval: Duration(hours: 2)),
       headerHeight: 0,
