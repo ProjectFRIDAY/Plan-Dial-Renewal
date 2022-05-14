@@ -4,7 +4,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
-import 'package:flutter/material.dart';
 import '../utils/noti_manager.dart';
 
 const double danceparty = 3600 * 24 * 7;
@@ -97,8 +96,8 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                 height: 15,
                 width: 15,
                 child: CircularProgressIndicator(
-                  backgroundColor: Color.fromARGB(255, 204, 0, 0),
-                  valueColor: AlwaysStoppedAnimation(
+                  backgroundColor: const Color.fromARGB(255, 204, 0, 0),
+                  valueColor: const AlwaysStoppedAnimation(
                       Color.fromARGB(255, 255, 051, 051)),
                   strokeWidth: 36,
                   value: urgentDial == null
@@ -108,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
               ),
             ),
             const ListIndexWidget("Dial"),
-            Expanded(child: ListViewWidget())
+            const Expanded(child: ListViewWidget())
           ],
           crossAxisAlignment: CrossAxisAlignment.stretch,
         ),
