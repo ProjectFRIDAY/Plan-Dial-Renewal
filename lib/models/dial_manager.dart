@@ -89,7 +89,8 @@ class DialManager {
     dials[id] = dial;
 
     if (!disabled) {
-      NotiManager().addNotification(id, name, dial.getFirstDateTime());
+      NotiManager()
+          .addNotification(id, name + "을(를) 할 시간입니다.", dial.getFirstDateTime());
     }
 
     notifyObservers();
@@ -100,8 +101,8 @@ class DialManager {
     if (dial.disabled) {
       NotiManager().removeNotification(dial.id);
     } else {
-      NotiManager()
-          .updateNotification(dial.id, dial.name, dial.getFirstDateTime());
+      NotiManager().updateNotification(
+          dial.id, dial.name + "을(를) 할 시간입니다.", dial.getFirstDateTime());
     }
     notifyObservers();
   }
