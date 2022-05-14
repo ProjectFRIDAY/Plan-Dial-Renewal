@@ -4,9 +4,11 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
+
 import '../utils/noti_manager.dart';
 
 const double danceparty = 3600 * 24 * 7;
+
 void main() {
   runApp(const MyApp());
 }
@@ -85,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
     return CupertinoPageScaffold(
       child: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const ListIndexWidget("Next"),
             MainTile(
@@ -112,7 +115,6 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
             const ListIndexWidget("Dial"),
             const Expanded(child: ListViewWidget())
           ],
-          crossAxisAlignment: CrossAxisAlignment.stretch,
         ),
       ),
     );
@@ -146,6 +148,12 @@ class ListViewWidget extends StatefulWidget {
 }
 
 class _ListViewState extends State<ListViewWidget> implements Observer {
+  bool _loading = true;
+
+  _ListViewState() {
+    DialManager().addObserver(this);
+  }
+
   @override
   Widget build(BuildContext context) {
     var dials = DialManager().getAllDials();
@@ -153,13 +161,16 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
         (a, b) => a.getLeftTimeInSeconds().compareTo(b.getLeftTimeInSeconds()));
     if (dials.isNotEmpty) dials.removeAt(0);
 
-    print("tttTest ==================");
+    if (_loading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
 
     return ListView(
       children: List.generate(
         dials.length,
         (i) {
-          print("tttTest " + i.toString() + " " + dials[i].toString());
           return SlideIndexWidget(dials[i]);
         },
       ),
@@ -168,7 +179,11 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
 
   @override
   void onChanged() {
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 }
 
