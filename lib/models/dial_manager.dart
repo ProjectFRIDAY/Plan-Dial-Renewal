@@ -30,8 +30,13 @@ class DialManager {
     /* TEST CODE */
     // await DbManager().clear();
     // await NotiManager().removeAllNotifications();
-    // await addDial("다이얼1", DateTime.now(), WeekSchedule(monday: Schedule(Time(15, 30)), tuesday: Schedule(Time(20, 30))));
-    // await addDial("다이얼2", DateTime.now(), WeekSchedule(friday: Schedule(Time(17, 30))));
+    // await addDial(
+    //     "다이얼1",
+    //     DateTime.now(),
+    //     WeekSchedule(
+    //         monday: Schedule(Time(15, 30)), tuesday: Schedule(Time(20, 30))));
+    // await addDial(
+    //     "다이얼2", DateTime.now(), WeekSchedule(friday: Schedule(Time(17, 30))));
     // await addDial("다이얼3", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(1, 30))), disabled: true);
     // await addDial("다이얼4", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(21, 5)), sunday: Schedule(Time(9, 30), Time(21, 30))));
 
@@ -143,7 +148,8 @@ class DialManager {
 
     for (Dial dial in getAllDials()) {
       if (dial.disabled) {
-        result.addAll(dial.toAppointments(CupertinoColors.inactiveGray));
+        result.addAll(
+            dial.toAppointments(CupertinoColors.inactiveGray.withAlpha(100)));
       } else {
         result.addAll(dial.toAppointments(_colors[colorPicker]));
         colorPicker = (colorPicker + 1) % _colors.length;

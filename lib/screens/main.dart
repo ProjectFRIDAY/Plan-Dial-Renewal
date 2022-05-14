@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
@@ -91,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
               subtitle: urgentDial != null
                   ? Dial.secondsToString(urgentDial.getLeftTimeInSeconds())
                   : "다이얼이 없음",
+
               icon: SizedBox(
                 height: 15,
                 width: 15,
@@ -101,10 +104,11 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                   strokeWidth: 36,
                   value: urgentDial!.getLeftTimeInSeconds() / danceparty,
                 ),
+
               ),
             ),
             const ListIndexWidget("Dial"),
-            Expanded(child: ListViewWidget(CupertinoColors.systemBlue))
+            Expanded(child: ListViewWidget())
           ],
           crossAxisAlignment: CrossAxisAlignment.stretch,
         ),
@@ -118,12 +122,22 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
   }
 }
 
-class ListViewWidget extends StatefulWidget {
-  late final Icon icon;
+class Item {
+  const Item(
+    this.index,
+    this.title,
+    this.subtitle,
+    this.color,
+  );
 
-  ListViewWidget(Color color, {Key? key}) : super(key: key) {
-    icon = Icon(CupertinoIcons.alarm_fill, color: color, size: 35);
-  }
+  final int index;
+  final String title;
+  final String subtitle;
+  final Color color;
+}
+
+class ListViewWidget extends StatefulWidget {
+  const ListViewWidget({Key? key}) : super(key: key);
 
   @override
   _ListViewState createState() => _ListViewState();
@@ -137,16 +151,116 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
         (a, b) => a.getLeftTimeInSeconds().compareTo(b.getLeftTimeInSeconds()));
     if (dials.isNotEmpty) dials.removeAt(0);
 
+    print("tttTest ==================");
+
     return ListView(
-      children: List.generate(dials.length, (i) {
-        return dials[i].toListTile(widget.icon);
-      }),
+      children: List.generate(
+        dials.length,
+        (i) {
+          print("tttTest " + i.toString() + " " + dials[i].toString());
+          return SlideIndexWidget(dials[i]);
+        },
+      ),
     );
   }
 
   @override
   void onChanged() {
     if (mounted) setState(() {});
+  }
+}
+
+class SlideIndexWidget extends StatefulWidget {
+  final Dial dial;
+
+  const SlideIndexWidget(this.dial, {Key? key}) : super(key: key);
+
+  @override
+  State<SlideIndexWidget> createState() => _SlideIndexWidgetState();
+}
+
+class _SlideIndexWidgetState extends State<SlideIndexWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Slidable(
+        // Specify a key if the Slidable is dismissible.
+        key: ValueKey(0),
+
+        // The end action pane is the one at the right or the bottom side.
+        endActionPane: ActionPane(
+          motion: DrawerMotion(),
+          children: [
+            !widget.dial.disabled
+                ? SlidableAction(
+                    onPressed: (context) {
+                      widget.dial.disabled = true;
+                      DialManager().updateDial(widget.dial);
+                    },
+                    foregroundColor: Colors.white,
+                    backgroundColor: CupertinoColors.inactiveGray,
+                    icon: Icons.play_disabled,
+                    label: 'Disable',
+                  )
+                : SlidableAction(
+                    onPressed: (context) {
+                      widget.dial.disabled = false;
+                      DialManager().updateDial(widget.dial);
+                    },
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromARGB(255, 49, 149, 255),
+                    icon: Icons.play_arrow,
+                    label: 'Able',
+                  ),
+            SlidableAction(
+              onPressed: (context) {
+                showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text('\"' + widget.dial.name + '\" 일정 삭제'),
+                        content: Text('\'확인\'을 누르시면 일정이 삭제됩니다.'),
+                        actions: [
+                          CupertinoDialogAction(
+                              isDefaultAction: true,
+                              child: const Text("확인"),
+                              onPressed: () {
+                                DialManager().removeDialById(widget.dial.id);
+                                Navigator.pop(context);
+                              }),
+                          CupertinoDialogAction(
+                              isDefaultAction: true,
+                              child: const Text("취소"),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              }),
+                        ],
+                      );
+                    });
+              },
+              backgroundColor: CupertinoColors.systemRed,
+              foregroundColor: Colors.white,
+              icon: Icons.delete,
+              label: 'Delete',
+            ),
+          ],
+        ),
+        // The child of the Slidable is what the user sees when the
+        // component is not dragged.
+        child: ListTile(
+            tileColor: CupertinoColors.white,
+            leading: Icon(CupertinoIcons.calendar_circle_fill,
+                color: widget.dial.disabled
+                    ? CupertinoColors.inactiveGray
+                    : CupertinoColors.activeBlue,
+                size: 40),
+            title: Text(widget.dial.name,
+                style: TextStyle(fontWeight: FontWeight.w600)),
+            subtitle:
+                Text(Dial.secondsToString(widget.dial.getLeftTimeInSeconds())),
+            trailing: Icon(CupertinoIcons.right_chevron)),
+      ),
+    );
   }
 }
 

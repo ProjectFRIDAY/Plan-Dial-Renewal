@@ -109,6 +109,7 @@ class Dial {
     return weekSchedule.toAppointments(name, color);
   }
 
+  @Deprecated("해당 방식의 UI를 사용하지 않음.")
   CupertinoListTile toListTile(Icon icon) {
     return CupertinoListTile(
       leading: icon,
@@ -140,5 +141,10 @@ class Dial {
 
     assert(false, "최초 실행 시간을 구할 수 없습니다.");
     return startTime;
+  }
+
+  @override
+  String toString() {
+    return name;
   }
 }
