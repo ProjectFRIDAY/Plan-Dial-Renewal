@@ -35,6 +35,15 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  cupertino_list_tile: ^0.2.0
+  syncfusion_flutter_calendar: ^20.1.51
+
+  sqflite:
+  path:
+  flutter_local_notifications:
+  flutter_time_picker_spinner: ^2.0.0
+  flutter_slidable: ^1.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
