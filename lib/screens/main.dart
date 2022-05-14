@@ -275,10 +275,10 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                   transform: Matrix4.rotationY(3.14), // 좌우 반전
                   child: CircularProgressIndicator(
                     backgroundColor: widget.dial.disabled
-                        ? Color.fromARGB(255, 180, 180, 180)
+                        ? Color.fromARGB(255, 220, 220, 220)
                         : Color.fromARGB(255, 215, 209, 250),
                     valueColor: AlwaysStoppedAnimation(widget.dial.disabled
-                        ? Color.fromARGB(255, 100, 100, 100)
+                        ? Color.fromARGB(255, 180, 180, 180)
                         : Color.fromARGB(255, 85, 104, 206)),
                     strokeWidth: 36,
                     value: widget.dial.getLeftTimeInSeconds() / danceparty,
@@ -287,7 +287,11 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
               ),
             ),
             title: Text(widget.dial.name,
-                style: TextStyle(fontWeight: FontWeight.w600)),
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: widget.dial.disabled
+                        ? CupertinoColors.inactiveGray
+                        : CupertinoColors.black)),
             subtitle:
                 Text(Dial.secondsToString(widget.dial.getLeftTimeInSeconds())),
             trailing: Icon(CupertinoIcons.right_chevron)),
