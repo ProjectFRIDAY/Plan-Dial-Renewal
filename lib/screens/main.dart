@@ -95,14 +95,17 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
               icon: SizedBox(
                 height: 15,
                 width: 15,
-                child: CircularProgressIndicator(
-                  backgroundColor: const Color.fromARGB(255, 204, 0, 0),
-                  valueColor: const AlwaysStoppedAnimation(
-                      Color.fromARGB(255, 255, 051, 051)),
-                  strokeWidth: 36,
-                  value: urgentDial == null
-                      ? 0
-                      : urgentDial.getLeftTimeInSeconds() / danceparty,
+                child: Transform(
+                  transform: Matrix4.rotationY(3.14), // 좌우 반전
+                  child: CircularProgressIndicator(
+                    backgroundColor: Color.fromARGB(255, 252, 92, 61),
+                    valueColor: const AlwaysStoppedAnimation(
+                        Color.fromARGB(255, 252, 174, 156)),
+                    strokeWidth: 36,
+                    value: urgentDial == null
+                        ? 0
+                        : urgentDial.getLeftTimeInSeconds() / danceparty,
+                  ),
                 ),
               ),
             ),
@@ -248,11 +251,23 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
         // component is not dragged.
         child: ListTile(
             tileColor: CupertinoColors.white,
-            leading: Icon(CupertinoIcons.calendar_circle_fill,
-                color: widget.dial.disabled
-                    ? CupertinoColors.inactiveGray
-                    : CupertinoColors.activeBlue,
-                size: 40),
+            leading: Padding(
+              padding: const EdgeInsets.fromLTRB(22, 15, 0, 8),
+              child: SizedBox(
+                height: 10,
+                width: 10,
+                child: Transform(
+                  transform: Matrix4.rotationY(3.14), // 좌우 반전
+                  child: CircularProgressIndicator(
+                    backgroundColor: Color.fromARGB(255, 0, 17, 255),
+                    valueColor: const AlwaysStoppedAnimation(
+                        Color.fromARGB(255, 255, 051, 051)),
+                    strokeWidth: 36,
+                    value: widget.dial.getLeftTimeInSeconds() / danceparty,
+                  ),
+                ),
+              ),
+            ),
             title: Text(widget.dial.name,
                 style: TextStyle(fontWeight: FontWeight.w600)),
             subtitle:
