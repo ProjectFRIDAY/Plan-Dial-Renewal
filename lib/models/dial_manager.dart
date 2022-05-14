@@ -40,8 +40,11 @@ class DialManager {
     // await addDial("다이얼3", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(1, 30))), disabled: true);
     // await addDial("다이얼4", DateTime.now(), WeekSchedule(wednesday: Schedule(Time(21, 5)), sunday: Schedule(Time(9, 30), Time(21, 30))));
 
-    Future.delayed(Duration(seconds: 5)).then((v) async =>
-        {dials.addAll(await DbManager().loadAllDials()), notifyObservers()});
+    dials.addAll(await DbManager().loadAllDials());
+    while (_observers.length < 2) {
+      await Future.delayed(const Duration(milliseconds: 250));
+    }
+    notifyObservers();
   }
 
   int getDialCount() {
