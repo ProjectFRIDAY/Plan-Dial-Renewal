@@ -6,9 +6,6 @@ import '../models/time.dart';
 import '../models/week_schedule.dart';
 import 'select_page.dart';
 
-/// 확인버튼 클릭시 정보를 다 입력했는지 확인하는 변수
-bool isFinish = false;
-
 // Add Dial Page
 class AddDialPage extends StatelessWidget {
   const AddDialPage({Key? key}) : super(key: key);
@@ -24,7 +21,7 @@ class AddDialPage extends StatelessWidget {
         border: Border(),
         backgroundColor: CupertinoColors.white,
       ),
-      child: Column(children: const [
+      child: Column(children: [
         AddDialTop(),
         AddDialName(),
         AddDialDay(),
@@ -263,7 +260,19 @@ class _AddDialTimeState extends State<AddDialTime> {
 
 // 확인버튼
 class AddButton extends StatefulWidget {
-  const AddButton({Key? key}) : super(key: key);
+  AddButton({Key? key}) : super(key: key);
+  bool isFinish = false;
+
+  bool isFinished() {
+    if (tempDialName == '' ||
+        !selectDayNumber.contains(1) ||
+        selectDateTime[0].hour == selectDateTime[1].hour &&
+            selectDateTime[0].minute == selectDateTime[1].minute) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   @override
   State<AddButton> createState() => _AddButtonState();
@@ -280,7 +289,7 @@ class _AddButtonState extends State<AddButton> {
         ),
         color: CupertinoColors.activeBlue,
         onPressed: () {
-          if (isFinish) {
+          if (widget.isFinished()) {
             showCupertinoDialog(
                 context: context,
                 builder: (context) {
