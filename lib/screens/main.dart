@@ -7,6 +7,7 @@ import 'package:plan_dial_renewal/screens/time_table.dart';
 
 import '../utils/noti_manager.dart';
 import 'Add_Dial.dart';
+import 'select_page.dart';
 
 const double danceparty = 3600 * 24 * 7;
 
@@ -335,6 +336,8 @@ class ListIndexWidget extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(CupertinoPageRoute<void>(
                     builder: (BuildContext context) => const AddDialPage()));
+                selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
+                selectDateTime = [DateTime.now(), DateTime.now()];
               },
               child: const Icon(CupertinoIcons.add, size: 25))));
     }
@@ -413,6 +416,8 @@ class MainTile extends StatelessWidget {
           if (pressable) {
             Navigator.of(context).push(CupertinoPageRoute<void>(
                 builder: (BuildContext context) => const AddDialPage()));
+            selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
+            selectDateTime = [DateTime.now(), DateTime.now()];
           }
         });
   }

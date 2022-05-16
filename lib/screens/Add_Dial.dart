@@ -28,9 +28,7 @@ class AddDialPage extends StatelessWidget {
         AddDialTime(),
         Spacer(),
         AddButton(),
-        SizedBox(
-          height: 80,
-        )
+        SizedBox(height: 80)
       ]),
     );
   }
