@@ -6,6 +6,7 @@ import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
 
 import '../utils/noti_manager.dart';
+import 'Add_Dial.dart';
 
 const double danceparty = 3600 * 24 * 7;
 
@@ -89,30 +90,34 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const ListIndexWidget("Next"),
+            const ListIndexWidget("Next", false),
             MainTile(
-              title: urgentDial != null ? urgentDial.name : "다이얼이 없음",
+              pressable: urgentDial == null,
+              title: urgentDial != null ? urgentDial.name : "일정 추가하기",
               subtitle: urgentDial != null
                   ? Dial.secondsToString(urgentDial.getLeftTimeInSeconds())
-                  : "다이얼이 없음",
-              icon: SizedBox(
-                height: 15,
-                width: 15,
-                child: Transform(
-                  transform: Matrix4.rotationY(3.14), // 좌우 반전
-                  child: CircularProgressIndicator(
-                    backgroundColor: Color.fromARGB(255, 234, 142, 134),
-                    valueColor: const AlwaysStoppedAnimation(
-                        Color.fromARGB(255, 234, 76, 62)),
-                    strokeWidth: 36,
-                    value: urgentDial == null
-                        ? 0
-                        : urgentDial.getLeftTimeInSeconds() / danceparty,
-                  ),
-                ),
-              ),
+                  : "버튼을 눌러 일정을 추가하세요.",
+              icon: urgentDial != null
+                  ? SizedBox(
+                      height: 15,
+                      width: 15,
+                      child: Transform(
+                        transform: Matrix4.rotationY(3.14), // 좌우 반전
+                        child: CircularProgressIndicator(
+                          backgroundColor: Color.fromARGB(255, 234, 142, 134),
+                          valueColor: const AlwaysStoppedAnimation(
+                              Color.fromARGB(255, 234, 76, 62)),
+                          strokeWidth: 36,
+                          value: urgentDial.getLeftTimeInSeconds() / danceparty,
+                        ),
+                      ),
+                    )
+                  : const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      child: Icon(CupertinoIcons.add, size: 40),
+                    ),
             ),
-            const ListIndexWidget("Dials"),
+            ListIndexWidget("Dials", urgentDial != null),
             const Expanded(child: ListViewWidget())
           ],
         ),
@@ -163,6 +168,12 @@ class _ListViewState extends State<ListViewWidget> implements Observer {
     if (_loading) {
       return const Center(
         child: CircularProgressIndicator(),
+      );
+    }
+
+    if (dials.isEmpty) {
+      return const Center(
+        child: Text("일정이 없습니다."),
       );
     }
 
@@ -301,32 +312,57 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
 
 class ListIndexWidget extends StatelessWidget {
   final String title;
+  final bool hasAddIcon;
 
-  const ListIndexWidget(this.title, {Key? key}) : super(key: key);
+  const ListIndexWidget(this.title, this.hasAddIcon, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text(
+    List<Widget> children = [
+      Text(
         title,
         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    ];
+
+    if (hasAddIcon) {
+      children.add(Container(
+          margin: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+          child: CupertinoButton(
+              padding: const EdgeInsets.all(0.0),
+              minSize: 0,
+              onPressed: () {
+                Navigator.of(context).push(CupertinoPageRoute<void>(
+                    builder: (BuildContext context) => const AddDialPage()));
+              },
+              child: const Icon(CupertinoIcons.add, size: 25))));
+    }
+
+    return Container(
+      child: Row(
+        children: children,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
       ),
       decoration: const BoxDecoration(
         color: CupertinoColors.extraLightBackgroundGray,
       ),
       height: 40,
-      padding: const EdgeInsets.fromLTRB(15, 8, 0, 0),
+      padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
     );
   }
 }
 
 class MainTile extends StatelessWidget {
+  final bool pressable;
+
   final String title;
   final String subtitle;
-  final SizedBox icon;
+  final Widget? icon;
 
   const MainTile(
       {Key? key,
+      required this.pressable,
       required this.title,
       required this.subtitle,
       required this.icon})
@@ -334,37 +370,50 @@ class MainTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(width: 22.5),
-          icon,
-          const SizedBox(width: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return TextButton(
+        style: TextButton.styleFrom(
+          splashFactory:
+              pressable ? InkRipple.splashFactory : NoSplash.splashFactory,
+        ),
+        child: Padding(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-              Padding(
-                child: Text(
-                  subtitle,
-                  style: const TextStyle(
-                    fontSize: 15,
+              const SizedBox(width: 22.5),
+              icon!,
+              const SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: CupertinoColors.black,
+                    ),
                   ),
-                ),
-                padding: const EdgeInsets.only(top: 5.0),
+                  Padding(
+                    child: Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Color.fromARGB(255, 100, 100, 100),
+                      ),
+                    ),
+                    padding: const EdgeInsets.only(top: 5.0),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-      padding: const EdgeInsets.all(20),
-    );
+          padding: const EdgeInsets.all(20),
+        ),
+        onPressed: () {
+          if (pressable) {
+            Navigator.of(context).push(CupertinoPageRoute<void>(
+                builder: (BuildContext context) => const AddDialPage()));
+          }
+        });
   }
 }
