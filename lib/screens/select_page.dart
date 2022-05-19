@@ -146,6 +146,44 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
     1: Text('          마감시간          '),
   };
 
+  bool isSelected() {
+    bool okay = true;
+    if (selectDateTime[0].hour == selectDateTime[1].hour &&
+        selectDateTime[0].minute == selectDateTime[1].minute) {
+      okay = false;
+    }
+    return okay;
+  }
+
+  String showTimes() {
+    String result = '';
+    if (selectDateTime[0].hour == selectDateTime[1].hour &&
+        selectDateTime[0].minute == selectDateTime[1].minute) {
+      result = '시간을 선택해주세요.';
+    } else {
+      for (var i = 0; i < 2; i++) {
+        int hourTime = 0;
+        if (selectDateTime[i].hour > 12) {
+          hourTime = selectDateTime[i].hour - 12;
+          result += hourTime.toString() +
+              ':' +
+              selectDateTime[i].minute.toString() +
+              ' PM';
+        } else {
+          result += selectDateTime[i].hour.toString() +
+              ':' +
+              selectDateTime[i].minute.toString() +
+              ' AM';
+        }
+
+        if (i == 0) {
+          result += ' ~ ';
+        }
+      }
+    }
+    return result;
+  }
+
   int? currentValue = 0;
   @override
   Widget build(BuildContext context) {
@@ -153,6 +191,16 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
       color: CupertinoColors.white,
       child: Column(
         children: [
+          Container(
+            height: 100,
+            alignment: Alignment.bottomCenter,
+            child: Text(
+              showTimes(),
+              style: isSelected()
+                  ? const TextStyle(color: CupertinoColors.black)
+                  : const TextStyle(color: CupertinoColors.systemRed),
+            ),
+          ),
           if (currentValue == 0)
             Expanded(
               child: CupertinoDatePicker(
@@ -173,6 +221,14 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
                 initialDateTime: DateTime.now(),
               ),
             ),
+          CupertinoButton(
+              child: const Icon(
+                CupertinoIcons.plus_app,
+                size: 35,
+              ),
+              onPressed: () {
+                setState(() {});
+              }),
           CupertinoSlidingSegmentedControl<int>(
             padding: EdgeInsets.all(4),
             children: children,

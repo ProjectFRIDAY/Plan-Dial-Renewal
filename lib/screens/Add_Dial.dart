@@ -199,15 +199,30 @@ class AddDialTime extends StatefulWidget {
 }
 
 class _AddDialTimeState extends State<AddDialTime> {
-  String makeTime() {
+  String showTimes() {
     String result = '';
+
     for (var i = 0; i < 2; i++) {
-      result += selectDateTime[i].hour.toString() +
-          ':' +
-          selectDateTime[i].minute.toString() +
-          ' ~ ';
+      int hourTime = 0;
+      if (selectDateTime[i].hour > 12) {
+        hourTime = selectDateTime[i].hour - 12;
+        result += hourTime.toString() +
+            ':' +
+            selectDateTime[i].minute.toString() +
+            ' PM';
+      } else {
+        result += selectDateTime[i].hour.toString() +
+            ':' +
+            selectDateTime[i].minute.toString() +
+            ' AM';
+      }
+
+      if (i == 0) {
+        result += ' ~ ';
+      }
     }
-    return result.substring(0, result.length - 3);
+
+    return result;
   }
 
   @override
@@ -225,7 +240,7 @@ class _AddDialTimeState extends State<AddDialTime> {
                         Border.all(width: 1.5, color: CupertinoColors.black)),
                 placeholder: selectDateTime[0].hour != selectDateTime[1].hour ||
                         selectDateTime[0].minute != selectDateTime[1].minute
-                    ? makeTime()
+                    ? showTimes()
                     : "Ex) 6:00 AM ~ 8:30 PM",
                 placeholderStyle:
                     selectDateTime[0].hour != selectDateTime[1].hour ||
