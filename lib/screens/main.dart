@@ -227,8 +227,8 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                     },
                     foregroundColor: Colors.white,
                     backgroundColor: CupertinoColors.inactiveGray,
-                    icon: Icons.play_disabled,
-                    label: 'Disable',
+                    icon: Icons.alarm_off,
+                    label: 'Alarm_off',
                   )
                 : SlidableAction(
                     onPressed: (context) {
@@ -237,8 +237,8 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                     },
                     foregroundColor: Colors.white,
                     backgroundColor: Color.fromARGB(255, 49, 149, 255),
-                    icon: Icons.play_arrow,
-                    label: 'Able',
+                    icon: Icons.alarm_on,
+                    label: 'Alarm_on',
                   ),
             SlidableAction(
               onPressed: (context) {
