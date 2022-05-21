@@ -337,7 +337,11 @@ class ListIndexWidget extends StatelessWidget {
                 Navigator.of(context).push(CupertinoPageRoute<void>(
                     builder: (BuildContext context) => const AddDialPage()));
                 selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
-                selectDateTime = [DateTime.now(), DateTime.now()];
+                selectDateTime = [
+                  getFiveTimesTime(DateTime.now()),
+                  getFiveTimesTime(DateTime.now())
+                ];
+                select = false;
               },
               child: const Icon(CupertinoIcons.add, size: 25))));
     }
@@ -417,7 +421,11 @@ class MainTile extends StatelessWidget {
             Navigator.of(context).push(CupertinoPageRoute<void>(
                 builder: (BuildContext context) => const AddDialPage()));
             selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
-            selectDateTime = [DateTime.now(), DateTime.now()];
+            selectDateTime = [
+              getFiveTimesTime(DateTime.now()),
+              getFiveTimesTime(DateTime.now())
+            ];
+            select = false;
           }
         });
   }
