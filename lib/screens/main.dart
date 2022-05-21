@@ -228,17 +228,17 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                     foregroundColor: Colors.white,
                     backgroundColor: CupertinoColors.inactiveGray,
                     icon: Icons.alarm_off,
-                    label: 'Alarm_off',
+                    label: 'Alarm',
                   )
                 : SlidableAction(
-                    onPressed: (context) {
+              onPressed: (context) {
                       widget.dial.disabled = false;
                       DialManager().updateDial(widget.dial);
                     },
                     foregroundColor: Colors.white,
                     backgroundColor: Color.fromARGB(255, 49, 149, 255),
                     icon: Icons.alarm_on,
-                    label: 'Alarm_on',
+                    label: 'Alarm',
                   ),
             SlidableAction(
               onPressed: (context) {
