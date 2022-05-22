@@ -17,6 +17,8 @@ GlobalKey dialTab = GlobalKey();
 GlobalKey tableTab = GlobalKey();
 GlobalKey listTileDrag = GlobalKey();
 
+bool isFirstUsing = false;
+
 void main() {
   runApp(const MyApp());
 }
@@ -69,7 +71,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Future<void> _showShowCaseWidget() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    bool isFirstUsing = !sharedPreferences.containsKey("isFirstUsing");
+    isFirstUsing = !sharedPreferences.containsKey("isFirstUsing");
 
     if (isFirstUsing) {
       WidgetsBinding.instance!.addPostFrameCallback((_) =>
@@ -271,6 +273,23 @@ class SlideIndexWidget extends StatefulWidget {
 class _SlideIndexWidgetState extends State<SlideIndexWidget> {
   @override
   Widget build(BuildContext context) {
+    Widget arrow;
+
+    if (isFirstUsing) {
+      arrow = Showcase(
+          key: listTileDrag,
+          description: '왼쪽으로 드래그 해보세요',
+          shapeBorder: const CircleBorder(),
+          overlayPadding: const EdgeInsets.all(8),
+          showcaseBackgroundColor: CupertinoColors.systemPink,
+          descTextStyle:
+              const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+          child: const Icon(CupertinoIcons.right_chevron));
+      isFirstUsing = false;
+    } else {
+      arrow = const Icon(CupertinoIcons.right_chevron);
+    }
+
     return Material(
       child: Slidable(
         // Specify a key if the Slidable is dismissible.
@@ -282,25 +301,25 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
           children: [
             !widget.dial.disabled
                 ? SlidableAction(
-                    onPressed: (context) {
-                      widget.dial.disabled = true;
-                      DialManager().updateDial(widget.dial);
-                    },
-                    foregroundColor: Colors.white,
-                    backgroundColor: CupertinoColors.inactiveGray,
-                    icon: Icons.alarm_off,
-                    label: 'Alarm',
-                  )
+              onPressed: (context) {
+                widget.dial.disabled = true;
+                DialManager().updateDial(widget.dial);
+              },
+              foregroundColor: Colors.white,
+              backgroundColor: CupertinoColors.inactiveGray,
+              icon: Icons.alarm_off,
+              label: 'Alarm',
+            )
                 : SlidableAction(
-                    onPressed: (context) {
-                      widget.dial.disabled = false;
-                      DialManager().updateDial(widget.dial);
-                    },
-                    foregroundColor: Colors.white,
-                    backgroundColor: Color.fromARGB(255, 49, 149, 255),
-                    icon: Icons.alarm_on,
-                    label: 'Alarm',
-                  ),
+              onPressed: (context) {
+                widget.dial.disabled = false;
+                DialManager().updateDial(widget.dial);
+              },
+              foregroundColor: Colors.white,
+              backgroundColor: Color.fromARGB(255, 49, 149, 255),
+              icon: Icons.alarm_on,
+              label: 'Alarm',
+            ),
             SlidableAction(
               onPressed: (context) {
                 showCupertinoDialog(
@@ -366,15 +385,7 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                       : CupertinoColors.black)),
           subtitle:
               Text(Dial.secondsToString(widget.dial.getLeftTimeInSeconds())),
-          trailing: Showcase(
-              key: listTileDrag,
-              description: '왼쪽으로 드래그 하세요',
-              shapeBorder: CircleBorder(),
-              overlayPadding: EdgeInsets.all(8),
-              showcaseBackgroundColor: CupertinoColors.systemPink,
-              descTextStyle:
-                  TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
-              child: Icon(CupertinoIcons.left_chevron)),
+          trailing: arrow,
         ),
       ),
     );
