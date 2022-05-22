@@ -4,13 +4,14 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../utils/noti_manager.dart';
 import 'Add_Dial.dart';
 import 'select_page.dart';
 
-const double danceparty = 3600 * 24 * 7;
+const int secondsPerWeek = Duration.secondsPerDay * 7;
 GlobalKey initPlus = GlobalKey();
 GlobalKey dialTab = GlobalKey();
 GlobalKey tableTab = GlobalKey();
@@ -62,9 +63,20 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) =>
-        ShowCaseWidget.of(context)!
-            .startShowCase([initPlus, dialTab, tableTab, listTileDrag]));
+    _showShowCaseWidget();
+  }
+
+  Future<void> _showShowCaseWidget() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    bool isFirstUsing = !sharedPreferences.containsKey("isFirstUsing");
+
+    if (isFirstUsing) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) =>
+          ShowCaseWidget.of(context)!
+              .startShowCase([initPlus, dialTab, tableTab, listTileDrag]));
+      sharedPreferences.setBool("isFirstUsing", false);
+    }
   }
 
   @override
@@ -73,7 +85,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       BottomNavigationBarItem(
           icon: Showcase(
               key: dialTab,
-              description: '일정들을 리스트로 보여줍니다.',
+              description: '다가오는 일정을 보여줍니다',
               shapeBorder: const CircleBorder(),
               overlayPadding: const EdgeInsets.fromLTRB(25, 6, 25, 20),
               showcaseBackgroundColor: CupertinoColors.systemPink,
@@ -84,7 +96,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       BottomNavigationBarItem(
           icon: Showcase(
               key: tableTab,
-              description: '일정들을 달력으로 보여줍니다.',
+              description: '한 주의 일정을 보여줍니다',
               shapeBorder: const CircleBorder(),
               overlayPadding: const EdgeInsets.fromLTRB(25, 6, 25, 20),
               showcaseBackgroundColor: CupertinoColors.systemPink,
@@ -149,7 +161,8 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                           valueColor: const AlwaysStoppedAnimation(
                               Color.fromARGB(255, 234, 76, 62)),
                           strokeWidth: 36,
-                          value: urgentDial.getLeftTimeInSeconds() / danceparty,
+                          value: urgentDial.getLeftTimeInSeconds() /
+                              secondsPerWeek,
                         ),
                       ),
                     )
@@ -157,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                       padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
                       child: Showcase(
                           key: initPlus,
-                          description: '일정을 추가할 수 있습니다.',
+                          description: '+ 버튼을 눌러 일정을 추가할 수 있습니다',
                           shapeBorder: CircleBorder(),
                           overlayPadding: EdgeInsets.all(8),
                           showcaseBackgroundColor: CupertinoColors.systemPink,
@@ -324,44 +337,45 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
         // The child of the Slidable is what the user sees when the
         // component is not dragged.
         child: ListTile(
-            tileColor: CupertinoColors.white,
-            leading: Padding(
-              padding: const EdgeInsets.fromLTRB(24.5, 15, 10, 8),
-              child: SizedBox(
-                height: 10,
-                width: 10,
-                child: Transform(
-                  transform: Matrix4.rotationY(3.14), // 좌우 반전
-                  child: CircularProgressIndicator(
-                    backgroundColor: widget.dial.disabled
-                        ? Color.fromARGB(255, 220, 220, 220)
-                        : Color.fromARGB(255, 215, 209, 250),
-                    valueColor: AlwaysStoppedAnimation(widget.dial.disabled
-                        ? Color.fromARGB(255, 180, 180, 180)
-                        : Color.fromARGB(255, 85, 104, 206)),
-                    strokeWidth: 36,
-                    value: widget.dial.getLeftTimeInSeconds() / danceparty,
-                  ),
+          tileColor: CupertinoColors.white,
+          leading: Padding(
+            padding: const EdgeInsets.fromLTRB(24.5, 15, 10, 8),
+            child: SizedBox(
+              height: 10,
+              width: 10,
+              child: Transform(
+                transform: Matrix4.rotationY(3.14), // 좌우 반전
+                child: CircularProgressIndicator(
+                  backgroundColor: widget.dial.disabled
+                      ? Color.fromARGB(255, 220, 220, 220)
+                      : Color.fromARGB(255, 215, 209, 250),
+                  valueColor: AlwaysStoppedAnimation(widget.dial.disabled
+                      ? Color.fromARGB(255, 180, 180, 180)
+                      : Color.fromARGB(255, 85, 104, 206)),
+                  strokeWidth: 36,
+                  value: widget.dial.getLeftTimeInSeconds() / secondsPerWeek,
                 ),
               ),
             ),
-            title: Text(widget.dial.name,
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: widget.dial.disabled
-                        ? CupertinoColors.inactiveGray
-                        : CupertinoColors.black)),
-            subtitle:
-                Text(Dial.secondsToString(widget.dial.getLeftTimeInSeconds())),
-            trailing: Showcase(
-                key: listTileDrag,
-                description: '왼쪽으로 드레그 하세요!',
-                shapeBorder: CircleBorder(),
-                overlayPadding: EdgeInsets.all(8),
-                showcaseBackgroundColor: CupertinoColors.systemPink,
-                descTextStyle:
-                    TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
-                child: Icon(CupertinoIcons.right_chevron))),
+          ),
+          title: Text(widget.dial.name,
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: widget.dial.disabled
+                      ? CupertinoColors.inactiveGray
+                      : CupertinoColors.black)),
+          subtitle:
+              Text(Dial.secondsToString(widget.dial.getLeftTimeInSeconds())),
+          trailing: Showcase(
+              key: listTileDrag,
+              description: '왼쪽으로 드래그 하세요',
+              shapeBorder: CircleBorder(),
+              overlayPadding: EdgeInsets.all(8),
+              showcaseBackgroundColor: CupertinoColors.systemPink,
+              descTextStyle:
+                  TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+              child: Icon(CupertinoIcons.left_chevron)),
+        ),
       ),
     );
   }
