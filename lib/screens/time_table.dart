@@ -130,12 +130,15 @@ class _WeekTopState extends State<WeekTop> {
                           Navigator.of(context)
                               .push(CupertinoPageRoute<void>(
                                   builder: (BuildContext context) =>
-                                      const AddDialPage()))
+                                      AddDialPage()))
                               .then((value) {
                             setState(() {});
                           });
                           selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
-                          selectDateTime = [DateTime.now(), DateTime.now()];
+                          selectDateTime = [
+                            getFiveTimesTime(DateTime.now()),
+                            getFiveTimesTime(DateTime.now())
+                          ];
                         },
                         child: const Icon(CupertinoIcons.add, size: 25)),
                   ]),

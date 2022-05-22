@@ -8,7 +8,7 @@ import 'select_page.dart';
 
 // Add Dial Page
 class AddDialPage extends StatelessWidget {
-  const AddDialPage({Key? key}) : super(key: key);
+  AddDialPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

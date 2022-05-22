@@ -4,12 +4,17 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../utils/noti_manager.dart';
 import 'Add_Dial.dart';
 import 'select_page.dart';
 
 const double danceparty = 3600 * 24 * 7;
+GlobalKey initPlus = GlobalKey();
+GlobalKey dialTab = GlobalKey();
+GlobalKey tableTab = GlobalKey();
+GlobalKey listTileDrag = GlobalKey();
 
 void main() {
   runApp(const MyApp());
@@ -21,37 +26,72 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     NotiManager();
-    return const CupertinoApp(
+    return CupertinoApp(
       title: 'Plan Dial',
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      home: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text(
-            'Plan Dial',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+      theme: const CupertinoThemeData(brightness: Brightness.light),
+      home: ShowCaseWidget(
+        builder: Builder(
+          builder: (context) => const CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              middle: Text(
+                'Plan Dial',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              border: Border(),
+              backgroundColor: CupertinoColors.white,
             ),
+            child: BottomNavigation(),
           ),
-          border: Border(),
-          backgroundColor: CupertinoColors.white,
         ),
-        child: BottomNavigation(),
       ),
     );
   }
 }
 
-class BottomNavigation extends StatelessWidget {
+class BottomNavigation extends StatefulWidget {
   const BottomNavigation({Key? key}) : super(key: key);
+
+  @override
+  State<BottomNavigation> createState() => _BottomNavigationState();
+}
+
+class _BottomNavigationState extends State<BottomNavigation> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) =>
+        ShowCaseWidget.of(context)!
+            .startShowCase([initPlus, dialTab, tableTab, listTileDrag]));
+  }
 
   @override
   Widget build(BuildContext context) {
     List<BottomNavigationBarItem> items = [
-      const BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.clock), label: 'Dial'),
-      const BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.table), label: 'Table'),
+      BottomNavigationBarItem(
+          icon: Showcase(
+              key: dialTab,
+              description: '일정들을 리스트로 보여줍니다.',
+              shapeBorder: const CircleBorder(),
+              overlayPadding: const EdgeInsets.fromLTRB(25, 6, 25, 20),
+              showcaseBackgroundColor: CupertinoColors.systemPink,
+              descTextStyle: const TextStyle(
+                  fontWeight: FontWeight.w600, color: Colors.white),
+              child: const Icon(CupertinoIcons.clock)),
+          label: 'Dial'),
+      BottomNavigationBarItem(
+          icon: Showcase(
+              key: tableTab,
+              description: '일정들을 달력으로 보여줍니다.',
+              shapeBorder: const CircleBorder(),
+              overlayPadding: const EdgeInsets.fromLTRB(25, 6, 25, 20),
+              showcaseBackgroundColor: CupertinoColors.systemPink,
+              descTextStyle: const TextStyle(
+                  fontWeight: FontWeight.w600, color: Colors.white),
+              child: const Icon(CupertinoIcons.table)),
+          label: 'Table'),
     ];
 
     return CupertinoTabScaffold(
@@ -113,9 +153,17 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                         ),
                       ),
                     )
-                  : const Padding(
+                  : Padding(
                       padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                      child: Icon(CupertinoIcons.add, size: 40),
+                      child: Showcase(
+                          key: initPlus,
+                          description: '일정을 추가할 수 있습니다.',
+                          shapeBorder: CircleBorder(),
+                          overlayPadding: EdgeInsets.all(8),
+                          showcaseBackgroundColor: CupertinoColors.systemPink,
+                          descTextStyle: TextStyle(
+                              fontWeight: FontWeight.w600, color: Colors.white),
+                          child: Icon(CupertinoIcons.add, size: 40)),
                     ),
             ),
             ListIndexWidget("Dials", urgentDial != null),
@@ -231,7 +279,7 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                     label: 'Alarm',
                   )
                 : SlidableAction(
-              onPressed: (context) {
+                    onPressed: (context) {
                       widget.dial.disabled = false;
                       DialManager().updateDial(widget.dial);
                     },
@@ -305,7 +353,15 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
                         : CupertinoColors.black)),
             subtitle:
                 Text(Dial.secondsToString(widget.dial.getLeftTimeInSeconds())),
-            trailing: Icon(CupertinoIcons.right_chevron)),
+            trailing: Showcase(
+                key: listTileDrag,
+                description: '왼쪽으로 드레그 하세요!',
+                shapeBorder: CircleBorder(),
+                overlayPadding: EdgeInsets.all(8),
+                showcaseBackgroundColor: CupertinoColors.systemPink,
+                descTextStyle:
+                    TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+                child: Icon(CupertinoIcons.right_chevron))),
       ),
     );
   }
@@ -335,7 +391,7 @@ class ListIndexWidget extends StatelessWidget {
               minSize: 0,
               onPressed: () {
                 Navigator.of(context).push(CupertinoPageRoute<void>(
-                    builder: (BuildContext context) => const AddDialPage()));
+                    builder: (BuildContext context) => AddDialPage()));
                 selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
                 selectDateTime = [
                   getFiveTimesTime(DateTime.now()),
@@ -419,7 +475,7 @@ class MainTile extends StatelessWidget {
         onPressed: () {
           if (pressable) {
             Navigator.of(context).push(CupertinoPageRoute<void>(
-                builder: (BuildContext context) => const AddDialPage()));
+                builder: (BuildContext context) => AddDialPage()));
             selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
             selectDateTime = [
               getFiveTimesTime(DateTime.now()),

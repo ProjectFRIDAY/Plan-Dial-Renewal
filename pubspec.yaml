@@ -43,6 +43,7 @@ dependencies:
   flutter_local_notifications:
   flutter_time_picker_spinner: ^2.0.0
   flutter_slidable: ^1.2.0
+  showcaseview: ^1.1.5
 
 dev_dependencies:
   flutter_test:
