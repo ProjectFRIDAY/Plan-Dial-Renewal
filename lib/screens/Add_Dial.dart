@@ -8,7 +8,7 @@ import 'select_page.dart';
 
 // Add Dial Page
 class AddDialPage extends StatelessWidget {
-  const AddDialPage({Key? key}) : super(key: key);
+  AddDialPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -206,19 +206,27 @@ class _AddDialTimeState extends State<AddDialTime> {
       int hourTime = 0;
       if (selectDateTime[i].hour > 12) {
         hourTime = selectDateTime[i].hour - 12;
-        result += hourTime.toString() +
-            ':' +
+        result += "오후 " +
+            hourTime.toString() +
+            "시 " +
             selectDateTime[i].minute.toString() +
-            ' PM';
+            "분";
       } else {
-        result += selectDateTime[i].hour.toString() +
-            ':' +
+        result += "오전 " +
+            selectDateTime[i].hour.toString() +
+            "시 " +
             selectDateTime[i].minute.toString() +
-            ' AM';
+            "분";
       }
 
       if (i == 0) {
+        if (selectDateTime[0].hour == selectDateTime[1].hour &&
+            selectDateTime[0].minute == selectDateTime[1].minute) break;
         result += ' ~ ';
+
+        if (selectDateTime[0].isAfter(selectDateTime[1])) {
+          result += "익일 ";
+        }
       }
     }
 
@@ -238,15 +246,10 @@ class _AddDialTimeState extends State<AddDialTime> {
                     borderRadius: BorderRadius.circular(12),
                     border:
                         Border.all(width: 1.5, color: CupertinoColors.black)),
-                placeholder: selectDateTime[0].hour != selectDateTime[1].hour ||
-                        selectDateTime[0].minute != selectDateTime[1].minute
-                    ? showTimes()
-                    : "Ex) 6:00 AM ~ 8:30 PM",
-                placeholderStyle:
-                    selectDateTime[0].hour != selectDateTime[1].hour ||
-                            selectDateTime[0].minute != selectDateTime[1].minute
-                        ? TextStyle(color: CupertinoColors.systemRed)
-                        : TextStyle(color: CupertinoColors.inactiveGray),
+                placeholder: select ? showTimes() : "Ex) 6:00 AM ~ 8:30 PM",
+                placeholderStyle: select
+                    ? TextStyle(color: CupertinoColors.systemRed)
+                    : TextStyle(color: CupertinoColors.inactiveGray),
                 padding: EdgeInsets.all(10),
                 style: TextStyle(fontSize: 16),
               ),
@@ -266,7 +269,9 @@ class _AddDialTimeState extends State<AddDialTime> {
               .push(CupertinoPageRoute<void>(
                   builder: (BuildContext context) => const SelectTimePage()))
               .then((value) {
-            setState(() {});
+            setState(() {
+              select = true;
+            });
           });
         });
   }
@@ -278,10 +283,7 @@ class AddButton extends StatefulWidget {
   bool isFinish = false;
 
   bool isFinished() {
-    if (tempDialName == '' ||
-        !selectDayNumber.contains(1) ||
-        selectDateTime[0].hour == selectDateTime[1].hour &&
-            selectDateTime[0].minute == selectDateTime[1].minute) {
+    if (tempDialName == '' || !selectDayNumber.contains(1) || !select) {
       return true;
     } else {
       return false;

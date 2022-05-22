@@ -4,12 +4,20 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:plan_dial_renewal/models/dial.dart';
 import 'package:plan_dial_renewal/models/dial_manager.dart';
 import 'package:plan_dial_renewal/screens/time_table.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../utils/noti_manager.dart';
 import 'Add_Dial.dart';
 import 'select_page.dart';
 
-const double danceparty = 3600 * 24 * 7;
+const int secondsPerWeek = Duration.secondsPerDay * 7;
+GlobalKey initPlus = GlobalKey();
+GlobalKey dialTab = GlobalKey();
+GlobalKey tableTab = GlobalKey();
+GlobalKey listTileDrag = GlobalKey();
+
+bool isFirstUsing = false;
 
 void main() {
   runApp(const MyApp());
@@ -21,37 +29,83 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     NotiManager();
-    return const CupertinoApp(
+    return CupertinoApp(
       title: 'Plan Dial',
-      theme: CupertinoThemeData(brightness: Brightness.light),
-      home: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text(
-            'Plan Dial',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+      theme: const CupertinoThemeData(brightness: Brightness.light),
+      home: ShowCaseWidget(
+        builder: Builder(
+          builder: (context) => const CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              middle: Text(
+                'Plan Dial',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              border: Border(),
+              backgroundColor: CupertinoColors.white,
             ),
+            child: BottomNavigation(),
           ),
-          border: Border(),
-          backgroundColor: CupertinoColors.white,
         ),
-        child: BottomNavigation(),
       ),
     );
   }
 }
 
-class BottomNavigation extends StatelessWidget {
+class BottomNavigation extends StatefulWidget {
   const BottomNavigation({Key? key}) : super(key: key);
+
+  @override
+  State<BottomNavigation> createState() => _BottomNavigationState();
+}
+
+class _BottomNavigationState extends State<BottomNavigation> {
+  @override
+  void initState() {
+    super.initState();
+    _showShowCaseWidget();
+  }
+
+  Future<void> _showShowCaseWidget() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    isFirstUsing = !sharedPreferences.containsKey("isFirstUsing");
+
+    if (isFirstUsing) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) =>
+          ShowCaseWidget.of(context)!
+              .startShowCase([initPlus, dialTab, tableTab, listTileDrag]));
+      sharedPreferences.setBool("isFirstUsing", false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     List<BottomNavigationBarItem> items = [
-      const BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.clock), label: 'Dial'),
-      const BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.table), label: 'Table'),
+      BottomNavigationBarItem(
+          icon: Showcase(
+              key: dialTab,
+              description: '다가오는 일정을 보여줍니다',
+              shapeBorder: const CircleBorder(),
+              overlayPadding: const EdgeInsets.fromLTRB(25, 6, 25, 20),
+              showcaseBackgroundColor: CupertinoColors.systemPink,
+              descTextStyle: const TextStyle(
+                  fontWeight: FontWeight.w600, color: Colors.white),
+              child: const Icon(CupertinoIcons.clock)),
+          label: 'Dial'),
+      BottomNavigationBarItem(
+          icon: Showcase(
+              key: tableTab,
+              description: '한 주의 일정을 보여줍니다',
+              shapeBorder: const CircleBorder(),
+              overlayPadding: const EdgeInsets.fromLTRB(25, 6, 25, 20),
+              showcaseBackgroundColor: CupertinoColors.systemPink,
+              descTextStyle: const TextStyle(
+                  fontWeight: FontWeight.w600, color: Colors.white),
+              child: const Icon(CupertinoIcons.table)),
+          label: 'Table'),
     ];
 
     return CupertinoTabScaffold(
@@ -109,13 +163,22 @@ class _MyHomePageState extends State<MyHomePage> implements Observer {
                           valueColor: const AlwaysStoppedAnimation(
                               Color.fromARGB(255, 234, 76, 62)),
                           strokeWidth: 36,
-                          value: urgentDial.getLeftTimeInSeconds() / danceparty,
+                          value: urgentDial.getLeftTimeInSeconds() /
+                              secondsPerWeek,
                         ),
                       ),
                     )
-                  : const Padding(
+                  : Padding(
                       padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                      child: Icon(CupertinoIcons.add, size: 40),
+                      child: Showcase(
+                          key: initPlus,
+                          description: '+ 버튼을 눌러 일정을 추가할 수 있습니다',
+                          shapeBorder: CircleBorder(),
+                          overlayPadding: EdgeInsets.all(8),
+                          showcaseBackgroundColor: CupertinoColors.systemPink,
+                          descTextStyle: TextStyle(
+                              fontWeight: FontWeight.w600, color: Colors.white),
+                          child: Icon(CupertinoIcons.add, size: 40)),
                     ),
             ),
             ListIndexWidget("Dials", urgentDial != null),
@@ -210,6 +273,23 @@ class SlideIndexWidget extends StatefulWidget {
 class _SlideIndexWidgetState extends State<SlideIndexWidget> {
   @override
   Widget build(BuildContext context) {
+    Widget arrow;
+
+    if (isFirstUsing) {
+      arrow = Showcase(
+          key: listTileDrag,
+          description: '왼쪽으로 드래그 해보세요',
+          shapeBorder: const CircleBorder(),
+          overlayPadding: const EdgeInsets.all(8),
+          showcaseBackgroundColor: CupertinoColors.systemPink,
+          descTextStyle:
+              const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+          child: const Icon(CupertinoIcons.right_chevron));
+      isFirstUsing = false;
+    } else {
+      arrow = const Icon(CupertinoIcons.right_chevron);
+    }
+
     return Material(
       child: Slidable(
         // Specify a key if the Slidable is dismissible.
@@ -221,25 +301,25 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
           children: [
             !widget.dial.disabled
                 ? SlidableAction(
-                    onPressed: (context) {
-                      widget.dial.disabled = true;
-                      DialManager().updateDial(widget.dial);
-                    },
-                    foregroundColor: Colors.white,
-                    backgroundColor: CupertinoColors.inactiveGray,
-                    icon: Icons.alarm_off,
-                    label: 'Alarm_off',
-                  )
+              onPressed: (context) {
+                widget.dial.disabled = true;
+                DialManager().updateDial(widget.dial);
+              },
+              foregroundColor: Colors.white,
+              backgroundColor: CupertinoColors.inactiveGray,
+              icon: Icons.alarm_off,
+              label: 'Alarm',
+            )
                 : SlidableAction(
-                    onPressed: (context) {
-                      widget.dial.disabled = false;
-                      DialManager().updateDial(widget.dial);
-                    },
-                    foregroundColor: Colors.white,
-                    backgroundColor: Color.fromARGB(255, 49, 149, 255),
-                    icon: Icons.alarm_on,
-                    label: 'Alarm_on',
-                  ),
+              onPressed: (context) {
+                widget.dial.disabled = false;
+                DialManager().updateDial(widget.dial);
+              },
+              foregroundColor: Colors.white,
+              backgroundColor: Color.fromARGB(255, 49, 149, 255),
+              icon: Icons.alarm_on,
+              label: 'Alarm',
+            ),
             SlidableAction(
               onPressed: (context) {
                 showCupertinoDialog(
@@ -276,36 +356,37 @@ class _SlideIndexWidgetState extends State<SlideIndexWidget> {
         // The child of the Slidable is what the user sees when the
         // component is not dragged.
         child: ListTile(
-            tileColor: CupertinoColors.white,
-            leading: Padding(
-              padding: const EdgeInsets.fromLTRB(24.5, 15, 10, 8),
-              child: SizedBox(
-                height: 10,
-                width: 10,
-                child: Transform(
-                  transform: Matrix4.rotationY(3.14), // 좌우 반전
-                  child: CircularProgressIndicator(
-                    backgroundColor: widget.dial.disabled
-                        ? Color.fromARGB(255, 220, 220, 220)
-                        : Color.fromARGB(255, 215, 209, 250),
-                    valueColor: AlwaysStoppedAnimation(widget.dial.disabled
-                        ? Color.fromARGB(255, 180, 180, 180)
-                        : Color.fromARGB(255, 85, 104, 206)),
-                    strokeWidth: 36,
-                    value: widget.dial.getLeftTimeInSeconds() / danceparty,
-                  ),
+          tileColor: CupertinoColors.white,
+          leading: Padding(
+            padding: const EdgeInsets.fromLTRB(24.5, 15, 10, 8),
+            child: SizedBox(
+              height: 10,
+              width: 10,
+              child: Transform(
+                transform: Matrix4.rotationY(3.14), // 좌우 반전
+                child: CircularProgressIndicator(
+                  backgroundColor: widget.dial.disabled
+                      ? Color.fromARGB(255, 220, 220, 220)
+                      : Color.fromARGB(255, 215, 209, 250),
+                  valueColor: AlwaysStoppedAnimation(widget.dial.disabled
+                      ? Color.fromARGB(255, 180, 180, 180)
+                      : Color.fromARGB(255, 85, 104, 206)),
+                  strokeWidth: 36,
+                  value: widget.dial.getLeftTimeInSeconds() / secondsPerWeek,
                 ),
               ),
             ),
-            title: Text(widget.dial.name,
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: widget.dial.disabled
-                        ? CupertinoColors.inactiveGray
-                        : CupertinoColors.black)),
-            subtitle:
-                Text(Dial.secondsToString(widget.dial.getLeftTimeInSeconds())),
-            trailing: Icon(CupertinoIcons.right_chevron)),
+          ),
+          title: Text(widget.dial.name,
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: widget.dial.disabled
+                      ? CupertinoColors.inactiveGray
+                      : CupertinoColors.black)),
+          subtitle:
+              Text(Dial.secondsToString(widget.dial.getLeftTimeInSeconds())),
+          trailing: arrow,
+        ),
       ),
     );
   }
@@ -335,9 +416,13 @@ class ListIndexWidget extends StatelessWidget {
               minSize: 0,
               onPressed: () {
                 Navigator.of(context).push(CupertinoPageRoute<void>(
-                    builder: (BuildContext context) => const AddDialPage()));
+                    builder: (BuildContext context) => AddDialPage()));
                 selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
-                selectDateTime = [DateTime.now(), DateTime.now()];
+                selectDateTime = [
+                  getFiveTimesTime(DateTime.now()),
+                  getFiveTimesTime(DateTime.now())
+                ];
+                select = false;
               },
               child: const Icon(CupertinoIcons.add, size: 25))));
     }
@@ -415,9 +500,13 @@ class MainTile extends StatelessWidget {
         onPressed: () {
           if (pressable) {
             Navigator.of(context).push(CupertinoPageRoute<void>(
-                builder: (BuildContext context) => const AddDialPage()));
+                builder: (BuildContext context) => AddDialPage()));
             selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
-            selectDateTime = [DateTime.now(), DateTime.now()];
+            selectDateTime = [
+              getFiveTimesTime(DateTime.now()),
+              getFiveTimesTime(DateTime.now())
+            ];
+            select = false;
           }
         });
   }

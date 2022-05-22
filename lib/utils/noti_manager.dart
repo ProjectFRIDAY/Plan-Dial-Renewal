@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -11,9 +10,8 @@ class NotiManager {
     android: AndroidNotificationDetails(
       "pd",
       "Plan Dial Notification",
-      priority: Priority.high,
-      importance: Importance.high,
-      color: CupertinoColors.activeBlue,
+      priority: Priority.max,
+      importance: Importance.max,
     ),
     iOS: IOSNotificationDetails(
       presentAlert: true,

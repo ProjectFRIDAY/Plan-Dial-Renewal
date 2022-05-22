@@ -31,6 +31,7 @@ class SelectDayList extends StatefulWidget {
 
 class _SelectDayListState extends State<SelectDayList> {
   List<String> dayNameList = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -56,6 +57,7 @@ List<int> selectDayNumber = [0, 0, 0, 0, 0, 0, 0];
 class SelectDayButton extends StatefulWidget {
   final String dayName;
   final int dayCount;
+
   SelectDayButton(this.dayName, this.dayCount) : super();
 
   @override
@@ -138,7 +140,12 @@ class SelectTimePicker extends StatefulWidget {
   State<SelectTimePicker> createState() => _SelectTimePickerState();
 }
 
-List<DateTime> selectDateTime = [DateTime.now(), DateTime.now()];
+List<DateTime> selectDateTime = [
+  getFiveTimesTime(DateTime.now()),
+  getFiveTimesTime(DateTime.now())
+];
+
+bool select = false;
 
 class _SelectTimePickerState extends State<SelectTimePicker> {
   final Map<int, Widget> children = const <int, Widget>{
@@ -146,38 +153,36 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
     1: Text('          마감시간          '),
   };
 
-  bool isSelected() {
-    bool okay = true;
-    if (selectDateTime[0].hour == selectDateTime[1].hour &&
-        selectDateTime[0].minute == selectDateTime[1].minute) {
-      okay = false;
-    }
-    return okay;
-  }
+  bool endSelect = (selectDateTime[0].hour != selectDateTime[1].hour ||
+      selectDateTime[0].minute != selectDateTime[1].minute);
 
   String showTimes() {
     String result = '';
-    if (selectDateTime[0].hour == selectDateTime[1].hour &&
-        selectDateTime[0].minute == selectDateTime[1].minute) {
-      result = '시간을 선택해주세요.';
-    } else {
-      for (var i = 0; i < 2; i++) {
-        int hourTime = 0;
-        if (selectDateTime[i].hour > 12) {
-          hourTime = selectDateTime[i].hour - 12;
-          result += hourTime.toString() +
-              ':' +
-              selectDateTime[i].minute.toString() +
-              ' PM';
-        } else {
-          result += selectDateTime[i].hour.toString() +
-              ':' +
-              selectDateTime[i].minute.toString() +
-              ' AM';
-        }
 
-        if (i == 0) {
-          result += ' ~ ';
+    for (var i = 0; i < 2; i++) {
+      int hourTime = 0;
+      if (selectDateTime[i].hour > 12) {
+        hourTime = selectDateTime[i].hour - 12;
+        result += "오후 " +
+            hourTime.toString() +
+            "시 " +
+            selectDateTime[i].minute.toString() +
+            "분";
+      } else {
+        result += "오전 " +
+            selectDateTime[i].hour.toString() +
+            "시 " +
+            selectDateTime[i].minute.toString() +
+            "분";
+      }
+
+      if (i == 0) {
+        if (selectDateTime[0].hour == selectDateTime[1].hour &&
+            selectDateTime[0].minute == selectDateTime[1].minute) break;
+        result += ' ~ ';
+
+        if (selectDateTime[0].isAfter(selectDateTime[1])) {
+          result += "익일 ";
         }
       }
     }
@@ -185,6 +190,7 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
   }
 
   int? currentValue = 0;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -196,9 +202,10 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
             alignment: Alignment.bottomCenter,
             child: Text(
               showTimes(),
-              style: isSelected()
-                  ? const TextStyle(color: CupertinoColors.black)
-                  : const TextStyle(color: CupertinoColors.systemRed),
+              style: const TextStyle(
+                color: CupertinoColors.black,
+                fontSize: 19,
+              ),
             ),
           ),
           if (currentValue == 0)
@@ -207,8 +214,13 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
                 mode: CupertinoDatePickerMode.time,
                 onDateTimeChanged: (value) {
                   selectDateTime[0] = value;
+                  if (!endSelect) {
+                    selectDateTime[1] = selectDateTime[0];
+                  }
+                  setState(() {});
                 },
-                initialDateTime: DateTime.now(),
+                initialDateTime: selectDateTime[0],
+                minuteInterval: 5,
               ),
             )
           else
@@ -217,18 +229,13 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
                 mode: CupertinoDatePickerMode.time,
                 onDateTimeChanged: (value) {
                   selectDateTime[1] = value;
+                  endSelect = true;
+                  setState(() {});
                 },
-                initialDateTime: DateTime.now(),
+                initialDateTime: selectDateTime[1],
+                minuteInterval: 5,
               ),
             ),
-          CupertinoButton(
-              child: const Icon(
-                CupertinoIcons.plus_app,
-                size: 35,
-              ),
-              onPressed: () {
-                setState(() {});
-              }),
           CupertinoSlidingSegmentedControl<int>(
             padding: EdgeInsets.all(4),
             children: children,
@@ -246,4 +253,9 @@ class _SelectTimePickerState extends State<SelectTimePicker> {
       ),
     );
   }
+}
+
+DateTime getFiveTimesTime(DateTime origin) {
+  return DateTime(origin.year, origin.month, origin.day, origin.hour,
+      (origin.minute / 5).floor() * 5);
 }
